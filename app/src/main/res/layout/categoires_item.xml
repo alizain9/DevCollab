@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@android:color/transparent">
+
+    <RelativeLayout
+        android:id="@+id/card_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="10dp"
+        android:background="@drawable/category_bg"
+        android:padding="8dp">
+
+        <!-- Circle Background for Icon -->
+        <LinearLayout
+            android:id="@+id/icon_bg"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/circle_shape"
+            android:orientation="horizontal" >
+
+        <!-- Icon Inside Circle -->
+        <ImageView
+        android:id="@+id/icon"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="center"
+        app:layout_constraintEnd_toEndOf="@id/icon_bg"
+        app:layout_constraintBottom_toBottomOf="@id/icon_bg"
+        app:layout_constraintStart_toStartOf="@id/icon_bg"
+        app:layout_constraintTop_toTopOf="@id/icon_bg"
+        android:scaleType="centerInside"/>
+        </LinearLayout>
+
+        <!-- Title Text -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins_bold"
+            android:layout_toEndOf="@id/icon_bg"
+            tools:text="Category Name" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
