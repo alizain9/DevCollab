@@ -2,44 +2,56 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:background="@color/grey_light"
     android:layout_height="match_parent"
-    tools:context=".Fragments.MessagesFragment">
+    android:background="@color/grey_light"
+    tools:context=".ApplicantsActivity">
+
+    <!-- Scrollable Content -->
+    <ImageView
+        android:id="@+id/back_to_projects"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_back" />
 
     <TextView
-        android:id="@+id/tvProjects"
+        android:id="@+id/tvPostProjectTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
         android:fontFamily="@font/poppins_bold"
-        android:text="Chats"
+        android:text="Applicants"
         android:textColor="@color/black"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/back_to_projects"
+        app:layout_constraintStart_toEndOf="@+id/back_to_projects"
+        app:layout_constraintTop_toTopOf="@+id/back_to_projects" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:background="@drawable/white_shape"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        android:background="@drawable/white_shape"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProjects">
+        app:layout_constraintTop_toBottomOf="@+id/tvPostProjectTitle">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_chats"
+            android:id="@+id/rv_applicants"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            tools:listitem="@layout/item_messages"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

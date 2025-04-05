@@ -15,7 +15,7 @@ import com.example.devcollab.R
 import androidx.core.content.ContextCompat
 
 
-class ProfileAdapter(private val itemList: List<Profile>) :
+class ProfileAdapter(private val itemList: List<Profile>, private val onItemClick: (Profile) -> Unit) :
     RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder>() {
 
     class ProfileViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -45,6 +45,10 @@ class ProfileAdapter(private val itemList: List<Profile>) :
             Log.e("ProfileAdapter", "Invalid color: ${item.backgroundColor}")
         }
 
+        // Set click listener
+        holder.itemView.setOnClickListener {
+            onItemClick(item) // Trigger the click action
+        }
     }
 
     override fun getItemCount(): Int = itemList.size

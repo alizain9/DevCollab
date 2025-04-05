@@ -78,16 +78,17 @@
             <!-- View Button -->
 
             <Button
-                android:id="@+id/applyButton"
+                android:id="@+id/btn_apply"
                 android:layout_width="80dp"
                 android:layout_height="28dp"
-                android:background="@drawable/btn_green_big"
+                android:background="@drawable/btn_green"
+                android:fontFamily="@font/poppins_medium"
                 android:text="Apply"
                 android:textAllCaps="false"
-                android:textSize="12sp"
                 android:textColor="@color/white"
-                android:fontFamily="@font/poppins_medium"
+                android:textSize="12sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/dateTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -97,13 +98,13 @@
                 android:layout_height="28dp"
                 android:layout_marginEnd="4dp"
                 android:background="@drawable/btn_grey"
+                android:fontFamily="@font/poppins_medium"
                 android:text="View"
                 android:textAllCaps="false"
                 android:textSize="12sp"
-                android:fontFamily="@font/poppins_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/applyButton"
-                app:layout_constraintEnd_toStartOf="@+id/applyButton"
-                app:layout_constraintTop_toTopOf="@+id/applyButton" />
+                app:layout_constraintBottom_toBottomOf="@+id/dateTextView"
+                app:layout_constraintEnd_toStartOf="@+id/btn_apply"
+                app:layout_constraintTop_toTopOf="@+id/btn_apply" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 

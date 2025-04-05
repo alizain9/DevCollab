@@ -93,15 +93,16 @@
                 app:layout_constraintTop_toTopOf="@+id/statusTextView" />
 
             <Button
-                android:id="@+id/applyButton"
+                android:id="@+id/btn_view_applicants"
                 android:layout_width="130dp"
                 android:layout_height="28dp"
-                android:background="@drawable/btn_green_big"
+                android:background="@drawable/btn_green"
+                android:fontFamily="@font/poppins_medium"
                 android:text="View Applicants"
                 android:textAllCaps="false"
-                android:textSize="12sp"
                 android:textColor="@color/white"
-                android:fontFamily="@font/poppins_medium"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/dateTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

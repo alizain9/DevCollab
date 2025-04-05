@@ -75,7 +75,7 @@
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginTop="32dp"
-            android:background="@drawable/btn_green_big"
+            android:background="@drawable/btn_green"
             android:fontFamily="@font/poppins_bold"
             android:gravity="center"
             android:text="Login"

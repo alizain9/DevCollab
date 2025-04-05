@@ -77,7 +77,7 @@
             android:textColor="@color/white"
             android:textAllCaps="false"
             android:fontFamily="@font/poppins_medium"
-            android:background="@drawable/btn_green_big"
+            android:background="@drawable/btn_green"
             android:text="Get Started" />
     </LinearLayout>
 

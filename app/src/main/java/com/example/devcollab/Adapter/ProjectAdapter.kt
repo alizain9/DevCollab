@@ -1,9 +1,15 @@
 package com.example.devcollab.Adapter
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.devcollab.ApplicantsActivity
 import com.example.devcollab.Model.Project
+import com.example.devcollab.ViewDetailsActivity
 import com.example.devcollab.databinding.MyProjectItemBinding
 import com.example.devcollab.databinding.ProjectItemBinding
 
@@ -11,15 +17,15 @@ class ProjectAdapter(private val projects: List<Project>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     // View Types
-    private val TYPE_FEATURED = 0
+    private val MY_PROJECTS = 0
     private val TYPE_NORMAL = 1
 
     override fun getItemViewType(position: Int): Int {
-        return if (projects[position].isMyProject) TYPE_FEATURED else TYPE_NORMAL
+        return if (projects[position].isMyProject) MY_PROJECTS else TYPE_NORMAL
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == TYPE_FEATURED) {
+        return if (viewType == MY_PROJECTS) {
             val binding = MyProjectItemBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
@@ -36,6 +42,9 @@ class ProjectAdapter(private val projects: List<Project>) :
         val project = projects[position]
         if (holder is FeaturedViewHolder) {
             holder.bind(project)
+            holder.itemView.setOnClickListener {
+
+            }
         } else if (holder is NormalViewHolder) {
             holder.bind(project)
         }
@@ -43,7 +52,7 @@ class ProjectAdapter(private val projects: List<Project>) :
 
     override fun getItemCount(): Int = projects.size
 
-    // Featured Project ViewHolder
+    // MY Project ViewHolder
     inner class FeaturedViewHolder(private val binding: MyProjectItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(project: Project) {
@@ -51,6 +60,10 @@ class ProjectAdapter(private val projects: List<Project>) :
             binding.fieldTextView.text = project.field
             binding.dateTextView.text = project.date
             binding.descriptionTextView.text = project.description
+            binding.btnViewApplicants.setOnClickListener {
+                val intent = Intent(binding.root.context, ApplicantsActivity::class.java)
+                binding.root.context.startActivity(intent)
+            }
         }
     }
 
@@ -62,6 +75,26 @@ class ProjectAdapter(private val projects: List<Project>) :
             binding.fieldTextView.text = project.field
             binding.dateTextView.text = project.date
             binding.descriptionTextView.text = project.description
+            binding.viewButton.setOnClickListener {
+                val intent = Intent(binding.root.context, ViewDetailsActivity::class.java)
+                binding.root.context.startActivity(intent)
+            }
+            binding.btnApply.setOnClickListener {
+                val dialog = AlertDialog.Builder(binding.root.context)
+                    .setTitle("Apply")
+                    .setMessage("Do you want to Apply for this project?")
+                    .setPositiveButton("Yes") { dialogInterface, _ ->
+                        // Do something
+                        Toast.makeText(binding.root.context, "Applied Successfully", Toast.LENGTH_SHORT).show()
+                        dialogInterface.dismiss() // dismisses the dialog
+                    }
+                    .setNegativeButton("No") { dialogInterface, _ ->
+                        dialogInterface.dismiss() // also dismisses
+                    }
+                    .create()
+
+                dialog.show()
+            }
         }
     }
 }

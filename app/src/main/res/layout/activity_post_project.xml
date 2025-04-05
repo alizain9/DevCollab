@@ -251,7 +251,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/btn_green_big"
+                android:background="@drawable/btn_green"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Post Project"
                 android:textAllCaps="false"
