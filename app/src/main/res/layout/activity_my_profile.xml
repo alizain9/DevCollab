@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_light"
     tools:context=".MyProfileActivity">
 
-  <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/main"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -48,36 +43,35 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/info_holder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/white_shape"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView5"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="50dp"
+        app:cardCornerRadius="99dp"
+        app:layout_constraintBottom_toTopOf="@+id/info_holder"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
-
-      <androidx.cardview.widget.CardView
-          android:id="@+id/cardView5"
-          android:layout_width="120dp"
-          android:layout_height="120dp"
-          android:layout_marginStart="8dp"
-          app:cardCornerRadius="99dp"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@+id/info_holder">
 
         <ImageView
             android:id="@+id/imageView4"
             android:layout_width="match_parent"
-            android:layout_height="117dp"
+            android:layout_height="match_parent"
             app:srcCompat="@drawable/circle_shape" />
-      </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info_holder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/white_shape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
   </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.core.widget.NestedScrollView>
