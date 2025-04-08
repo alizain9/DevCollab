@@ -1,0 +1,88 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="16dp"
+    android:background="@drawable/green_stroke_shape"
+    >
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <!-- Title -->
+<TextView
+android:id="@+id/dialog_title"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="Add Skill"
+android:textSize="20sp"
+android:fontFamily="@font/poppins_bold"
+android:textStyle="bold"
+android:textColor="@color/black"
+android:paddingBottom="16dp" />
+
+    <!-- Skill Input -->
+<EditText
+android:id="@+id/skill_edit_text"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:hint="Enter Skill"
+android:fontFamily="@font/poppins_medium"
+android:inputType="textCapWords"
+    android:textSize="14sp"
+android:paddingStart="25dp"
+android:textColor="@color/black"
+android:textColorHint="@color/grey_dark"
+android:padding="8dp"
+android:background="@drawable/edittext_shape" />
+
+    <!-- Level Input -->
+<EditText
+android:id="@+id/level_edit_text"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:hint="Select Level"
+android:fontFamily="@font/poppins_medium"
+android:focusable="false"
+android:clickable="true"
+    android:textSize="14sp"
+android:paddingStart="25dp"
+android:textColor="@color/black"
+android:textColorHint="@color/grey_dark"
+android:padding="8dp"
+android:background="@drawable/edittext_shape"
+android:layout_marginTop="8dp" />
+
+    <!-- Buttons -->
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="horizontal"
+android:gravity="end"
+android:paddingTop="16dp">
+
+<Button
+    android:id="@+id/cancel_button"
+    android:layout_width="wrap_content"
+    android:layout_height="30dp"
+    android:textAllCaps="false"
+    android:background="@drawable/btn_grey"
+    android:text="Cancel" />
+
+<Button
+    android:id="@+id/add_button"
+    android:layout_width="wrap_content"
+    android:layout_height="30dp"
+    android:background="@drawable/btn_green"
+    android:text="Add"
+    android:textAllCaps="false"
+    android:textColor="@color/white"
+    android:layout_marginStart="8dp" />
+</LinearLayout>
+</LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.devcollab.AboutActivity
 import com.example.devcollab.Adapter.ProfileAdapter
 import com.example.devcollab.Model.Profile
+import com.example.devcollab.MyProfileActivity
 import com.example.devcollab.R
 import com.example.devcollab.databinding.FragmentProfileBinding
 import me.ibrahimsn.lib.SmoothBottomBar
@@ -57,7 +58,9 @@ class ProfileFragment : Fragment() {
     private fun onProfileItemClick(profile: Profile) {
         when (profile.title) {
             "Profile" -> {
-                // Handle Profile item click
+                // Navigate to the Profile activity
+                val intent = Intent(requireContext(), MyProfileActivity::class.java)
+                startActivity(intent)
             }
 
             "Dashboard" -> {
