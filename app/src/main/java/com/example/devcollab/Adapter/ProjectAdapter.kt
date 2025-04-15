@@ -5,11 +5,10 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.devcollab.ApplicantsActivity
+import com.example.devcollab.Activities.ApplicantsActivity
 import com.example.devcollab.Model.Project
-import com.example.devcollab.ViewDetailsActivity
+import com.example.devcollab.Activities.ViewDetailsActivity
 import com.example.devcollab.databinding.MyProjectItemBinding
 import com.example.devcollab.databinding.ProjectItemBinding
 

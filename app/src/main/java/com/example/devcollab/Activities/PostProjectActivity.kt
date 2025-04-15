@@ -1,4 +1,4 @@
-package com.example.devcollab
+package com.example.devcollab.Activities
 
 import android.app.DatePickerDialog
 import android.os.Bundle

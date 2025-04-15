@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+    id ("kotlin-kapt")
 }
 
 android {
@@ -38,7 +39,7 @@ android {
         jvmTarget = "11"
     }
 }
-
+apply(plugin = "kotlin-kapt")
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -57,8 +58,26 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+
+
+
 // bottom Navigation bar
     implementation ("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
     implementation("com.github.Drjacky:ImagePicker:2.3.22")
+
+// Room
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+
+    // Gson
+    implementation ("com.google.code.gson:gson:2.10.1") // Latest version
+
+
+
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+
 
 }

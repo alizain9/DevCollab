@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_light"
-    tools:context=".MyProfileActivity">
+    tools:context=".Activities.MyProfileActivity">
 
   <!-- Top Section -->
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,7 +56,7 @@
 
   <!-- Profile Image -->
   <androidx.cardview.widget.CardView
-      android:id="@+id/cardView5"
+      android:id="@+id/cardProfile"
       android:layout_width="100dp"
       android:layout_height="100dp"
       android:layout_marginStart="16dp"
@@ -66,9 +66,10 @@
       app:layout_constraintTop_toTopOf="@+id/scrollView">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/imageProfile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         android:background="@drawable/circle_shape" />
   </androidx.cardview.widget.CardView>
 
@@ -94,10 +95,10 @@
           android:id="@+id/name"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginStart="30dp"
+          android:layout_marginStart="35dp"
           android:layout_marginTop="60dp"
-          android:text="Name"
           android:fontFamily="@font/poppins_bold"
+          android:text="Name"
           android:textColor="@color/black"
           android:textSize="20sp"
           app:layout_constraintStart_toStartOf="parent"
@@ -107,10 +108,10 @@
           android:id="@+id/proffession"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="4dp"
-          android:text="Profession"
           android:fontFamily="@font/poppins_medium"
+          android:text="Profession"
           android:textColor="@color/black"
+          app:layout_constraintEnd_toEndOf="@+id/name"
           app:layout_constraintStart_toStartOf="@+id/name"
           app:layout_constraintTop_toBottomOf="@+id/name" />
 
@@ -118,12 +119,13 @@
           android:id="@+id/textView17"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginStart="12dp"
           android:layout_marginTop="16dp"
-          android:text="About"
           android:fontFamily="@font/poppins_bold"
+          android:text="About"
           android:textColor="@color/black"
           android:textSize="14sp"
-          app:layout_constraintStart_toStartOf="@+id/proffession"
+          app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/proffession" />
 
       <TextView
@@ -133,7 +135,6 @@
           android:layout_marginTop="4dp"
           android:layout_marginEnd="30dp"
           android:fontFamily="@font/poppins"
-          android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
           android:textColor="@color/black"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="@+id/textView17"
@@ -152,12 +153,12 @@
           app:layout_constraintTop_toBottomOf="@+id/about" />
 
       <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/recyclerView"
+          android:id="@+id/rv_skills_profile"
           android:layout_width="match_parent"
           android:layout_height="140dp"
-          android:layout_marginStart="1dp"
+          android:layout_marginStart="4dp"
           android:layout_marginTop="4dp"
-          android:layout_marginEnd="1dp"
+          android:layout_marginEnd="4dp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/textView19" />
@@ -172,12 +173,15 @@
           android:textColor="@color/black"
           android:textSize="14sp"
           app:layout_constraintStart_toStartOf="@+id/textView19"
-          app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+          app:layout_constraintTop_toBottomOf="@+id/rv_skills_profile" />
 
       <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rv_feedback"
           android:layout_width="match_parent"
           android:layout_height="140dp"
+          android:layout_marginStart="4dp"
           android:layout_marginTop="4dp"
+          android:layout_marginEnd="4dp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintHorizontal_bias="0.5"
           app:layout_constraintStart_toStartOf="parent"

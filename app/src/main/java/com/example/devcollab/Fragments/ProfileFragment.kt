@@ -1,26 +1,36 @@
 package com.example.devcollab.Fragments
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.devcollab.AboutActivity
+import com.example.devcollab.Activities.AboutActivity
+import com.example.devcollab.Activities.LoginActivity
+import com.example.devcollab.Activities.MainActivity
 import com.example.devcollab.Adapter.ProfileAdapter
 import com.example.devcollab.Model.Profile
-import com.example.devcollab.MyProfileActivity
+import com.example.devcollab.Activities.MyProfileActivity
+import com.example.devcollab.Database.Firestore.AuthRepository
+import com.example.devcollab.Database.Room.AppDatabase
 import com.example.devcollab.R
 import com.example.devcollab.databinding.FragmentProfileBinding
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import me.ibrahimsn.lib.SmoothBottomBar
 import kotlin.jvm.java
-import kotlin.text.replace
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+    private lateinit var authRepo: AuthRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +50,8 @@ class ProfileFragment : Fragment() {
             Profile("Profile", R.drawable.ic_profile_tab, "#D0E6A5"),
             Profile("Dashboard", R.drawable.ic_dashboard, "#87CEEB"),
             Profile("My Projects", R.drawable.ic_my_project, "#FF9A3D"),
-            Profile("About", R.drawable.ic_about, "#D1C4E9") // Fixed color code
+            Profile("About", R.drawable.ic_about, "#D1C4E9"), // Fixed color code
+            Profile("Logout", R.drawable.ic_logout, "#E3F2FD") // Fixed color code
         )
 
         binding.rvProfile.layoutManager = LinearLayoutManager(requireContext())
@@ -95,6 +106,25 @@ class ProfileFragment : Fragment() {
                 // go to the about activity
                 val intent = Intent(requireContext(), AboutActivity::class.java)
                 startActivity(intent)
+            }
+            "Logout" ->{
+                // logout the users
+                authRepo = AuthRepository()
+                if (authRepo.isUserLoggedIn()) {
+                    authRepo.signOut()
+                    val job = lifecycleScope.async {
+                        AppDatabase.getDatabase(requireContext()).userDao().deleteUser()
+                        AppDatabase.getDatabase(requireContext()).clearAllTables()
+                    }
+                    job.invokeOnCompletion {
+                        val intent = Intent(requireContext(), MainActivity::class.java)
+                        startActivity(intent)
+                        requireActivity().finish()
+                    }
+
+                } else{
+                    Toast.makeText(requireContext(), "User is not logged in", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

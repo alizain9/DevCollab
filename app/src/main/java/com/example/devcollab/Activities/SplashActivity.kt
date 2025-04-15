@@ -1,15 +1,18 @@
-package com.example.devcollab
+package com.example.devcollab.Activities
 
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.view.animation.AlphaAnimation
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
@@ -31,7 +34,9 @@ class SplashActivity : AppCompatActivity() {
         setupInsets()
         applyFadeInAnimation()
         checkFirstLaunch()
-    }
+
+
+        }
 
     /**
      * Adjusts window insets for proper UI alignment.

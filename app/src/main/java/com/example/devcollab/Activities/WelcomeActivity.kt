@@ -1,4 +1,4 @@
-package com.example.devcollab
+package com.example.devcollab.Activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {

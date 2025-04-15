@@ -8,9 +8,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.devcollab.R
 
-class SkillsAdapter(private var skillsList: MutableList<String>,
-                    private val onDeleteClick: (String) -> Unit) :
-    RecyclerView.Adapter<SkillsAdapter.SkillsViewHolder>() {
+class AddSkillsAdapter(private var skillsList: MutableList<String>,
+                       private val onDeleteClick: (String) -> Unit) :
+    RecyclerView.Adapter<AddSkillsAdapter.SkillsViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

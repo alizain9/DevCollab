@@ -5,15 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import androidx.fragment.app.Fragment
+
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+
 import com.example.devcollab.Adapter.CategoriesAdapter
 import com.example.devcollab.Adapter.ProjectAdapter
-import com.example.devcollab.LoginActivity
+import com.example.devcollab.Activities.LoginActivity
+
+import com.example.devcollab.Database.Room.AppDatabase
 import com.example.devcollab.Model.Category
 import com.example.devcollab.Model.Project
 import com.example.devcollab.R
 import com.example.devcollab.databinding.FragmentHomeBinding
+
+import kotlinx.coroutines.launch
 import me.ibrahimsn.lib.SmoothBottomBar
 
 class HomeFragment : Fragment() {
@@ -27,18 +36,50 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        setupJoinButton()
+        setUphometop()
         setupSeeProjectsButton()
         setupBannerFlipper()
         setupCategoriesRecyclerView()
         setupProjectsRecyclerView()
 
+
         return binding.root
     }
 
-    private fun setupJoinButton() {
-        binding.btnJoin.setOnClickListener {
-            startActivity(Intent(requireContext(), LoginActivity::class.java))
+    private fun setUphometop() {
+
+        lifecycleScope.launch {
+            val user = AppDatabase.getDatabase(requireContext()).userDao().getUser()
+            if (user != null) {
+                // User is logged in
+                binding.tvCollabrate.visibility = View.GONE
+                binding.btnJoin.visibility = View.GONE
+
+                binding.cardProfiler.visibility = View.VISIBLE
+                binding.nameProfiler.visibility = View.VISIBLE
+                binding.proffesssionProfiler.visibility = View.VISIBLE
+                binding.btnProfile.visibility = View.VISIBLE
+
+                binding.nameProfiler.text = user.username
+                binding.proffesssionProfiler.text = user.profession
+                val profileImageUrl = user.profileImageUrl
+                Glide.with(requireContext())
+                    .load(profileImageUrl)
+                    .placeholder(R.drawable.user)
+                    .into(binding.imageProfiler)
+            } else {
+                // No user in local DB
+                binding.tvCollabrate.visibility = View.VISIBLE
+                binding.btnJoin.visibility = View.VISIBLE
+                binding.btnJoin.setOnClickListener {
+                    startActivity(Intent(requireContext(), LoginActivity::class.java))
+                }
+
+                binding.cardProfiler.visibility = View.GONE
+                binding.nameProfiler.visibility = View.GONE
+                binding.proffesssionProfiler.visibility = View.GONE
+                binding.btnProfile.visibility = View.GONE
+            }
         }
     }
 

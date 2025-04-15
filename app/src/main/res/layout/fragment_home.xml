@@ -14,15 +14,16 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/tv_collabrate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
             android:fontFamily="@font/poppins_bold"
             android:text="Wants To Collabrate?"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/constraintlayout2"
             app:layout_constraintEnd_toStartOf="@+id/btn_join"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -40,21 +41,80 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView4"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_collabrate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView4"
-            app:layout_constraintTop_toTopOf="@+id/textView4" />
+            app:layout_constraintStart_toEndOf="@+id/tv_collabrate"
+            app:layout_constraintTop_toTopOf="@+id/tv_collabrate" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_profiler"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="24dp"
+            android:visibility="gone"
+            app:cardCornerRadius="99dp"
+            app:layout_constraintBottom_toTopOf="@+id/constraintlayout2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imageProfiler"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/nameProfiler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/proffesssionProfiler"
+            app:layout_constraintStart_toEndOf="@+id/card_profiler"
+            app:layout_constraintTop_toTopOf="@+id/card_profiler"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/proffesssionProfiler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:text="TextView"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/card_profiler"
+            app:layout_constraintStart_toStartOf="@+id/nameProfiler"
+            app:layout_constraintTop_toBottomOf="@+id/nameProfiler" />
+
+        <ImageView
+            android:id="@+id/btn_profile"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_profile_tab"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/constraintlayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintlayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="100dp"
             android:background="@drawable/white_shape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4">
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <androidx.appcompat.widget.SearchView
@@ -321,8 +381,8 @@
                 android:layout_height="120dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="8dp"
-                app:cardElevation="8dp"
                 app:cardBackgroundColor="@color/sky_blue"
+                app:cardElevation="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/cardView2"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -381,9 +441,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 android:text="Ui Designer"
-                android:textSize="12sp"
-
                 android:textColor="@color/black"
+
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@+id/cardView2"
                 app:layout_constraintStart_toStartOf="@+id/cardView2"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -408,8 +468,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 android:text="Web Developer"
-                android:textSize="12sp"
                 android:textColor="@color/black"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@+id/textView10"
                 app:layout_constraintStart_toStartOf="@+id/textView10"
                 app:layout_constraintTop_toBottomOf="@+id/textView10" />

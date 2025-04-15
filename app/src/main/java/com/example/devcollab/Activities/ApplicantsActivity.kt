@@ -1,4 +1,4 @@
-package com.example.devcollab
+package com.example.devcollab.Activities
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -8,6 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.devcollab.Adapter.ApplicantsAdapter
 import com.example.devcollab.Model.Applicants
+import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivityApplicantsBinding
 
 class ApplicantsActivity : AppCompatActivity() {

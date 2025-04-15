@@ -1,20 +1,19 @@
-package com.example.devcollab
+package com.example.devcollab.Activities
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.devcollab.databinding.ActivityLoginBinding
-import com.example.devcollab.databinding.FragmentHomeBinding
+import com.example.devcollab.R
+import com.example.devcollab.databinding.ActivityViewDetailsBinding
 
-class LoginActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityLoginBinding
+class ViewDetailsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityViewDetailsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = ActivityViewDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -22,8 +21,7 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
-        binding.btnGotoSignup.setOnClickListener {
-            startActivity(Intent(this, SignupActivity::class.java))
+        binding.backToProjects.setOnClickListener {
             finish()
         }
     }

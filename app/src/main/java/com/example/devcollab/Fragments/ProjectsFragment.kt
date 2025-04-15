@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import com.example.devcollab.Adapter.ProjectsPagerAdapter
-import com.example.devcollab.PostProjectActivity
+import com.example.devcollab.Activities.PostProjectActivity
 import com.example.devcollab.databinding.FragmentProjectsBinding
 import com.google.android.material.tabs.TabLayoutMediator
 

@@ -1,4 +1,4 @@
-package com.example.devcollab
+package com.example.devcollab.Activities
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +10,7 @@ import com.example.devcollab.Fragments.HomeFragment
 import com.example.devcollab.Fragments.MessagesFragment
 import com.example.devcollab.Fragments.ProfileFragment
 import com.example.devcollab.Fragments.ProjectsFragment
+import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivityMainBinding
 import me.ibrahimsn.lib.SmoothBottomBar
 

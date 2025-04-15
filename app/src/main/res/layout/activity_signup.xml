@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_light"
-    tools:context=".SignupActivity">
+    tools:context=".Activities.SignupActivity">
 
         <!-- Logo at the Top -->
     <ImageView

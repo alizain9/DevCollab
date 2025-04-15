@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,40 +16,40 @@
         android:theme="@style/Theme.DevCollab"
         tools:targetApi="31">
         <activity
-            android:name=".CreateProfileActivity"
+            android:name=".Activities.CreateProfileActivity"
             android:windowSoftInputMode="adjustPan"
             android:exported="true">
         </activity>
         <activity
-            android:name=".AboutActivity"
+            android:name=".Activities.AboutActivity"
             android:exported="false" />
         <activity
-            android:name=".ViewDetailsActivity"
+            android:name=".Activities.ViewDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".ApplicantsActivity"
+            android:name=".Activities.ApplicantsActivity"
             android:exported="false" />
         <activity
-            android:name=".MyProfileActivity"
+            android:name=".Activities.MyProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".PostProjectActivity"
+            android:name=".Activities.PostProjectActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:name=".SignupActivity"
+            android:name=".Activities.SignupActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".Activities.WelcomeActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".Activities.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,7 +58,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:exported="true" />
 
         <meta-data
