@@ -1,9 +1,8 @@
-package com.example.devcollab
+package com.example.devcollab.Database.Converter
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-
 
 class Converter {
     @TypeConverter

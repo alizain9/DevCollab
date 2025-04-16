@@ -74,10 +74,10 @@ dependencies {
     // Gson
     implementation ("com.google.code.gson:gson:2.10.1") // Latest version
 
-
-
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 
+    // SpinKit
+    implementation("com.github.ybq:Android-SpinKit:1.4.0")
 
 }

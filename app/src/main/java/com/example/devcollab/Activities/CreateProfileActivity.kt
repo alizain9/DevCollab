@@ -1,9 +1,10 @@
 package com.example.devcollab.Activities
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -14,11 +15,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.devcollab.Adapter.AddSkillsAdapter
 import com.example.devcollab.Database.Firestore.FirestoreRepository
 import com.example.devcollab.Database.Firestore.UserModel
@@ -27,6 +30,7 @@ import com.example.devcollab.Database.Room.UserEntity
 import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivityCreateProfileBinding
 import com.example.devcollab.databinding.AddSkillsDialogBinding
+import com.github.ybq.android.spinkit.SpinKitView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -38,7 +42,7 @@ class CreateProfileActivity : AppCompatActivity() {
     private lateinit var addSkillsAdapter: AddSkillsAdapter
     private var selectedImageUri: Uri? = null
     private var firestoreRepository = FirestoreRepository()
-
+    private var mode: String? = null
     private val skillsList = mutableListOf<String>()
     private val IMAGE_PICK_CODE = 1000
 
@@ -54,8 +58,34 @@ class CreateProfileActivity : AppCompatActivity() {
             view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         setupRecyclerView()
         setupClickListeners()
+
+        // Retrieve data from Intent
+        mode = intent.getStringExtra("mode")
+        val username = intent.getStringExtra("username")
+        val profession = intent.getStringExtra("profession")
+        val about = intent.getStringExtra("about")
+        val experience = intent.getStringExtra("experience")
+        val skills = intent.getStringArrayListExtra("skills")
+        val profileImageUrl = intent.getStringExtra("profileImageUrl")
+
+        // Update UI based on mode
+        if (mode == "edit") {
+            binding.titleLayout.setText("Edit Profile")
+            binding.btnCreateProfile.setText("Update Profile")
+            binding.etUsername.setText(username)
+            binding.etProffession.setText(profession)
+            binding.etAbout.setText(about)
+            binding.etExperience.setText(experience)
+            skills?.let { skillsList.addAll(it) }
+            addSkillsAdapter.notifyDataSetChanged()
+            Glide.with(this).load(profileImageUrl).placeholder(R.drawable.user).into(binding.profileImg)
+        } else {
+            binding.titleLayout.setText("Complete your Profile")
+            binding.btnCreateProfile.setText("Create Profile")
+        }
     }
 
     // --------------------------
@@ -70,7 +100,6 @@ class CreateProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (resultCode == RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             selectedImageUri = data?.data
             binding.profileImg.setImageURI(data?.data)
@@ -85,7 +114,6 @@ class CreateProfileActivity : AppCompatActivity() {
             skillsList.remove(skill)
             addSkillsAdapter.notifyDataSetChanged()
         }
-
         binding.rvSkills.apply {
             layoutManager = LinearLayoutManager(this@CreateProfileActivity)
             adapter = addSkillsAdapter
@@ -99,98 +127,124 @@ class CreateProfileActivity : AppCompatActivity() {
         binding.cardUploadPic.setOnClickListener {
             pickImageFromGallery()
         }
-
         binding.btnAddSkills.setOnClickListener {
             showAddSkillsDialog()
         }
-
         binding.btnCreateProfile.setOnClickListener {
             uploadProfile()
         }
     }
 
     private fun uploadProfile() {
-
         val name = binding.etUsername.text.toString().trim()
-
-        if (name.isEmpty()) {
-            Toast.makeText(this, "Enter your name", Toast.LENGTH_SHORT).show()
-            return@uploadProfile
-        }
-
-        if (selectedImageUri == null) {
-            Toast.makeText(this, "Select a profile picture", Toast.LENGTH_SHORT).show()
-            return@uploadProfile
-        }
-
         val about = binding.etAbout.text.toString().trim()
-        if (about.isEmpty()) {
-            Toast.makeText(this, "Enter your about", Toast.LENGTH_SHORT).show()
-            return@uploadProfile
-        }
-
         val profession = binding.etProffession.text.toString().trim()
-        if (profession.isEmpty()) {
-            Toast.makeText(this, "Enter your profession", Toast.LENGTH_SHORT).show()
-            return@uploadProfile
-        }
-
         val experience = binding.etExperience.text.toString().trim()
+
+        // Validate input fields
+        if (name.isEmpty()) {
+            showToast("Enter your name")
+            return
+        }
+        if (selectedImageUri == null && mode != "edit") {
+            showToast("Select a profile picture")
+            return
+        }
+        if (about.isEmpty()) {
+            showToast("Enter your about")
+            return
+        }
+        if (profession.isEmpty()) {
+            showToast("Enter your profession")
+            return
+        }
         if (experience.isEmpty()) {
-            Toast.makeText(this, "Enter your experience", Toast.LENGTH_SHORT).show()
-            return@uploadProfile
+            showToast("Enter your experience")
+            return
         }
-        val skills = skillsList.joinToString(", ")
-        if (skills.isEmpty()) {
-            Toast.makeText(this, "Enter your skills", Toast.LENGTH_SHORT).show()
-            return@uploadProfile
+        if (skillsList.isEmpty()) {
+            showToast("Add at least one skill")
+            return
         }
-
-        uploadDatatoFirestore(name, about, profession, experience)
-
-
+        // Show progress dialog
+        uploadDataToFirestore(name, about, profession, experience)
     }
 
-    private fun uploadDatatoFirestore(name: String, about: String, profession: String, experience: String){
+    private fun uploadDataToFirestore(name: String, about: String, profession: String, experience: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         val email = FirebaseAuth.getInstance().currentUser?.email
-
-        if (uid == null || email == null || selectedImageUri == null) {
-            Toast.makeText(this, "User not logged in or image missing", Toast.LENGTH_SHORT).show()
+        if (uid == null || email == null) {
+            showToast("User not logged in")
             return
         }
 
         val storageRef = FirebaseStorage.getInstance().reference.child("profile_images/$uid.jpg")
-        storageRef.putFile(selectedImageUri!!)
-            .addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { uri ->
-                    val user = UserModel(
-                        uid = uid,
-                        username = name,
-                        email = email,
-                        about = about,
-                        profession = profession,
-                        experience = experience,
-                        skills = skillsList,
-                        profileImageUrl = uri.toString()
-                    )
+        val imageUploadTask = if (selectedImageUri != null) {
+            storageRef.putFile(selectedImageUri!!)
+        } else {
+            null // No new image to upload in edit mode
+        }
 
-                    firestoreRepository.saveUserProfile(user) { isSuccess, message ->
-                        if (isSuccess) {
-                            Toast.makeText(this, "Profile created successfully", Toast.LENGTH_SHORT)
-                                .show()
-                            saveToRoom(user)
-                        } else{
-                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+        imageUploadTask?.addOnSuccessListener {
+            storageRef.downloadUrl.addOnSuccessListener { uri ->
+                val user = UserModel(
+                    uid = uid,
+                    username = name,
+                    email = email,
+                    about = about,
+                    profession = profession,
+                    experience = experience,
+                    skills = skillsList,
+                    profileImageUrl = uri.toString()
+                )
+                saveUserData(user)
+            }.addOnFailureListener {
+                showToast("Failed to retrieve download URL")
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
-            }
+        }?.addOnFailureListener {
+            showToast("Failed to upload image")
+        } ?: run {
+            // If no new image is uploaded, use the existing profileImageUrl
+            val existingImageUrl = intent.getStringExtra("profileImageUrl")
+            val user = UserModel(
+                uid = uid,
+                username = name,
+                email = email,
+                about = about,
+                profession = profession,
+                experience = experience,
+                skills = skillsList,
+                profileImageUrl = existingImageUrl ?: ""
+            )
+            saveUserData(user)
+        }
     }
 
+    private fun saveUserData(user: UserModel) {
+        firestoreRepository.saveUserProfile(user) { isSuccess, message ->
+            if (isSuccess) {
+                lifecycleScope.launch {
+                    val userProfile = UserEntity(
+                        uid = user.uid,
+                        username = user.username,
+                        email = user.email,
+                        about = user.about,
+                        profession = user.profession,
+                        experience = user.experience,
+                        skills = user.skills,
+                        profileImageUrl = user.profileImageUrl
+                    )
+                    AppDatabase.getDatabase(this@CreateProfileActivity).userDao().insertUser(userProfile)
+                }
+                showToast("Profile ${if (mode == "edit") "updated" else "created"} successfully")
+
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            } else {
+                showToast(message.toString())
+            }
+        }
+    }
 
     private fun showAddSkillsDialog() {
         val dialogBinding = AddSkillsDialogBinding.inflate(layoutInflater)
@@ -202,40 +256,31 @@ class CreateProfileActivity : AppCompatActivity() {
         val skillEditText = dialogBinding.skillEditText
         val spinner = dialogBinding.spinnerLevel
         val arrow = dialogBinding.spinnerArrow
-
         val levels = arrayOf("Select Skill Level", "Beginner", "Intermediate", "Expert")
-        val customFont: Typeface? = ResourcesCompat.getFont(this, R.font.poppins_medium)
+        val customFont = ResourcesCompat.getFont(this, R.font.poppins_medium)
 
-        val adapter =
-            object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, levels) {
-                override fun isEnabled(position: Int): Boolean = true
-
-                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                    val view = super.getView(position, convertView, parent) as TextView
-                    view.setTextColor(if (position == 0) Color.GRAY else Color.BLACK)
-                    view.textSize = 14f
-                    customFont?.let { view.typeface = it }
-                    return view
-                }
-
-                override fun getDropDownView(
-                    position: Int,
-                    convertView: View?,
-                    parent: ViewGroup
-                ): View {
-                    val view = super.getDropDownView(position, convertView, parent) as TextView
-                    view.setTextColor(Color.BLACK)
-                    view.textSize = 14f
-                    customFont?.let { view.typeface = it }
-                    return view
-                }
+        val adapter = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, levels) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent) as TextView
+                view.setTextColor(if (position == 0) Color.GRAY else Color.BLACK)
+                view.textSize = 14f
+                customFont?.let { view.typeface = it }
+                return view
             }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent) as TextView
+                view.setTextColor(Color.BLACK)
+                view.textSize = 14f
+                customFont?.let { view.typeface = it }
+                return view
+            }
+        }
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
-        spinner.setSelection(0) // Default selected: "Select Skill Level"
+        spinner.setSelection(0)
 
-        // Arrow toggle logic
         spinner.setOnTouchListener { _, _ ->
             arrow.animate().rotation(180f).setDuration(200).start()
             false
@@ -252,15 +297,13 @@ class CreateProfileActivity : AppCompatActivity() {
         dialogBinding.addButton.setOnClickListener {
             val skill = skillEditText.text.toString().trim()
             val selectedLevel = spinner.selectedItem.toString()
-
             if (skill.isNotEmpty() && spinner.selectedItemPosition != 0) {
                 skillsList.add("$skill: $selectedLevel")
                 addSkillsAdapter.notifyDataSetChanged()
                 dialog.dismiss()
-                Toast.makeText(this, "Skill Added", Toast.LENGTH_SHORT).show()
+                showToast("Skill Added")
             } else {
-                Toast.makeText(this, "Please enter skill and select level", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("Please enter skill and select level")
             }
         }
 
@@ -269,27 +312,11 @@ class CreateProfileActivity : AppCompatActivity() {
         }
 
         dialog.show()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }
 
-
-    private fun saveToRoom(model: UserModel) {
-        val userProfile = UserEntity(
-            uid = model.uid,
-            username = model.username,
-            email = model.email,
-            about = model.about,
-            profession = model.profession,
-            experience = model.experience,
-            skills = model.skills,
-            profileImageUrl = model.profileImageUrl
-        )
-        lifecycleScope.launch {
-            AppDatabase.getDatabase(this@CreateProfileActivity).userDao().insertUser(userProfile)
-        }
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
 }
-
-

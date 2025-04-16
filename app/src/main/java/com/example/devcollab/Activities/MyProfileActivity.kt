@@ -2,6 +2,7 @@ package com.example.devcollab.Activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -34,11 +35,27 @@ class MyProfileActivity : AppCompatActivity() {
         fetchProfileData()
 
         binding.icEdit.setOnClickListener {
-            val intent = Intent(this, CreateProfileActivity::class.java)
-            intent.putExtra("name", binding.name.text.toString())
-            intent.putExtra("proffession", binding.proffession.text.toString())
-            intent.putExtra("about", binding.about.text.toString())
-            startActivity(intent)
+            lifecycleScope.launch {
+                try {
+                    val user = AppDatabase.getDatabase(this@MyProfileActivity).userDao().getUser()
+                    if (user != null) {
+                        val intent = Intent(this@MyProfileActivity, CreateProfileActivity::class.java)
+                        intent.putExtra("mode", "edit") // Indicate edit mode
+                        intent.putExtra("uid", user.uid) // Pass the user ID
+                        intent.putExtra("email", user.email)
+                        intent.putExtra("username", user.username)
+                        intent.putExtra("profession", user.profession)
+                        intent.putExtra("about", user.about)
+                        intent.putExtra("experience", user.experience)
+                        intent.putStringArrayListExtra("skills", ArrayList(user.skills)) // Convert List<String> to ArrayList
+                        intent.putExtra("profileImageUrl", user.profileImageUrl)
+                        startActivity(intent)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(this@MyProfileActivity, "Failed to fetch profile data", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
