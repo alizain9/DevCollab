@@ -71,10 +71,10 @@
                 android:background="@drawable/edittext_shape"
                 android:fontFamily="@font/poppins"
                 android:hint="Enter project title"
+                android:maxLines="2"
                 android:padding="10dp"
                 android:paddingStart="16dp"
                 android:textColor="@color/black"
-                android:maxLines="2"
                 android:textColorHint="@color/grey_dark"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -95,23 +95,30 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/etProjectTitle" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/etRequiredSkills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/edittext_shape"
+                android:completionThreshold="1"
+                android:dropDownAnchor="@id/etRequiredSkills"
+                android:dropDownHeight="160dp"
+                android:dropDownHorizontalOffset="10dp"
+                android:dropDownVerticalOffset="10dp"
                 android:fontFamily="@font/poppins"
                 android:hint="Enter required skills"
+                android:inputType="text"
+                android:maxLines="1"
                 android:padding="10dp"
                 android:paddingStart="16dp"
-                android:maxLines="1"
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey_dark"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvRequiredSkills" />
+
 
             <!-- Project Description -->
             <TextView
@@ -135,8 +142,8 @@
                 android:background="@drawable/edittext_low"
                 android:fontFamily="@font/poppins"
                 android:gravity="top"
-                android:maxLines="4"
                 android:hint="Enter project description"
+                android:maxLines="4"
                 android:minHeight="120dp"
                 android:padding="10dp"
                 android:paddingStart="16dp"
@@ -169,9 +176,9 @@
                 android:background="@drawable/edittext_shape"
                 android:clickable="true"
                 android:focusable="false"
-                android:inputType="date"
                 android:fontFamily="@font/poppins"
                 android:hint="Select deadline"
+                android:inputType="date"
                 android:padding="10dp"
                 android:paddingStart="16dp"
                 android:textColorHint="@color/grey_dark"
@@ -209,18 +216,18 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/edittext_shape"
+                    android:focusableInTouchMode="true"
                     android:fontFamily="@font/poppins"
                     android:hint="Add tags"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:padding="10dp"
-                    android:focusableInTouchMode="true"
                     android:paddingStart="16dp"
                     android:textColor="@color/black"
                     android:textColorHint="@color/grey_dark"
                     android:textSize="14sp" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnAddTag"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
@@ -244,7 +251,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tagsInputContainer" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnPostProject"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
@@ -260,4 +267,17 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spinKit"
+        style="@style/SpinKitView.Wave"
+        app:SpinKit_Color="@color/green"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

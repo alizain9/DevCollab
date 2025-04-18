@@ -3,6 +3,7 @@ package com.example.devcollab.Activities
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,22 +12,39 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.devcollab.Adapter.TagAdapter
 import com.example.devcollab.ViewModels.TagsViewModel
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Toast
+import com.example.devcollab.Database.Firestore.ProjectRepository
+import com.example.devcollab.ViewModels.PostProjectViewModel
+import com.example.devcollab.ViewModels.PostProjectViewModelFactory
 import com.example.devcollab.databinding.ActivityPostProjectBinding
+import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PostProjectActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPostProjectBinding
     private lateinit var tagViewModel: TagsViewModel
     private lateinit var tagAdapter: TagAdapter
+    private lateinit var postVM: PostProjectViewModel
+    private var pickedDate: Date? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setupView()
+        setupSkillsAutoComplete()
         setupBackButton()
         setupTags()
         setupDeadlinePicker()
+        setupViewModel()
+        setupPostButton()
+        observeViewModel()
     }
 
     // --------------------------
@@ -44,6 +62,7 @@ class PostProjectActivity : AppCompatActivity() {
         }
     }
 
+
     // --------------------------
     // Back Navigation
     // --------------------------
@@ -53,34 +72,57 @@ class PostProjectActivity : AppCompatActivity() {
         }
     }
 
+
+
+    // --------------------------
+    // AutoComplete to select skills
+    // --------------------------
+
+    private fun setupSkillsAutoComplete() {
+        val skills = listOf(
+            "Android Development", "iOS Development", "Web Development", "React", "Angular",
+            "Vue.js", "Node.js", "Java", "Kotlin", "Python", "C++", "C#", "PHP", "SQL", "NoSQL",
+            "UI/UX Design", "Graphic Design", "Machine Learning", "Deep Learning", "NLP",
+            "Cybersecurity", "DevOps", "Cloud Computing", "AWS", "Azure", "GCP",
+            "Blockchain", "Data Science", "Data Analysis", "QA Testing", "Software Engineering"
+        )
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, skills)
+        val autoCompleteTextView = binding.etRequiredSkills as AutoCompleteTextView
+        autoCompleteTextView.setAdapter(adapter)
+    }
+
+
     // --------------------------
     // Tags Section Setup
     // --------------------------
     private fun setupTags() {
-        tagViewModel = ViewModelProvider(this)[TagsViewModel::class.java]
+        tagViewModel = ViewModelProvider(this).get(TagsViewModel::class.java)
 
-        tagAdapter = TagAdapter(mutableListOf()) { tag ->
-            tagViewModel.removeTag(tag)
-        }
-
+        // 1) create one adapter instance
+        tagAdapter = TagAdapter(emptyList()) { tagViewModel.removeTag(it) }
         binding.rvTags.apply {
             layoutManager = LinearLayoutManager(this@PostProjectActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = tagAdapter
         }
 
+        // 2) observe once, update the adapter’s list
         tagViewModel.tags.observe(this) { tags ->
-            tagAdapter = TagAdapter(tags.toMutableList()) { tagViewModel.removeTag(it) }
-            binding.rvTags.adapter = tagAdapter
+           //  Log.d("PostProject", "Tags updated: $tags")
+            tagAdapter.submitList(tags)
         }
 
+        // 3) on button click, add to the VM
         binding.btnAddTag.setOnClickListener {
             val newTag = binding.etTags.text.toString().trim()
             if (newTag.isNotEmpty()) {
                 tagViewModel.addTag(newTag)
-                binding.etTags.text.clear()
+                binding.etTags.setText("")   // clear the input
             }
         }
     }
+
+
 
     // --------------------------
     // Deadline Picker Setup
@@ -100,22 +142,81 @@ class PostProjectActivity : AppCompatActivity() {
     }
 
     private fun showDatePicker() {
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        val datePickerDialog = DatePickerDialog(
+        val cal = Calendar.getInstance()
+        DatePickerDialog(
             this,
-            { _, selectedYear, selectedMonth, selectedDay ->
-                val formattedDate = String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear)
-                binding.etDeadline.setText(formattedDate)
+            { _, year, month, day ->
+                cal.set(year, month, day)
+                pickedDate = cal.time
+                binding.etDeadline.setText(
+                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        .format(cal.time)
+                )
             },
-            year,
-            month,
-            day
-        )
-
-        datePickerDialog.show()
+            cal.get(Calendar.YEAR),
+            cal.get(Calendar.MONTH),
+            cal.get(Calendar.DAY_OF_MONTH)
+        ).apply {
+            datePicker.minDate = System.currentTimeMillis()
+            show()
+        }
     }
+
+
+
+    // --------------------------
+    // ViewModel wiring
+    // --------------------------
+    private fun setupViewModel() {
+        val repo    = ProjectRepository()
+        val factory = PostProjectViewModelFactory(repo)
+        postVM      = ViewModelProvider(this, factory)[PostProjectViewModel::class.java]
+    }
+
+    private fun setupPostButton() {
+        binding.btnPostProject.setOnClickListener {
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user == null) {
+                Toast.makeText(this, "You must be signed in first", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val title       = binding.etProjectTitle.text.toString().trim()
+            val desc        = binding.etDescription.text.toString().trim()
+            val skillsInput = (binding.etRequiredSkills as AutoCompleteTextView)
+                .text.toString()
+                .split(",")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+            // convert pickedDate -> Firestore Timestamp
+            val deadlineTs: Timestamp? = pickedDate?.let { Timestamp(it) }
+            val tagsList: List<String> = tagViewModel.tags.value ?: emptyList()
+
+          //  Toast.makeText(this, "Tags = $tagsList", Toast.LENGTH_SHORT).show()
+
+            postVM.postProject(
+                ownerId     = user.uid,
+                title       = title,
+                description = desc,
+                skills      = skillsInput,
+                tags        = tagsList,
+                deadlineTs  = deadlineTs,
+            )
+        }
+    }
+
+    private fun observeViewModel() {
+        postVM.loading.observe(this) { loading ->
+            binding.spinKit.visibility = if (loading) View.VISIBLE else View.GONE
+        }
+        postVM.success.observe(this) { ok ->
+            if (ok) {
+                Toast.makeText(this, "Posted successfully!", Toast.LENGTH_SHORT).show()
+                finish()
+            } else {
+                Toast.makeText(this, "Failed to post. Try again.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 }
