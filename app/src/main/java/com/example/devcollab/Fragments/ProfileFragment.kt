@@ -109,6 +109,7 @@ class ProfileFragment : Fragment() {
             }
             "Logout" ->{
                 // logout the users
+                showLoading(true)
                 authRepo = AuthRepository()
                 if (authRepo.isUserLoggedIn()) {
                     authRepo.signOut()
@@ -117,15 +118,32 @@ class ProfileFragment : Fragment() {
                         AppDatabase.getDatabase(requireContext()).clearAllTables()
                     }
                     job.invokeOnCompletion {
+                        showLoading(false)
+                        Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show()
                         val intent = Intent(requireContext(), MainActivity::class.java)
                         startActivity(intent)
                         requireActivity().finish()
                     }
 
                 } else{
+                    showLoading(false)
                     Toast.makeText(requireContext(), "User is not logged in", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.spinKit.visibility = View.VISIBLE
+
+            requireActivity().window.setFlags(
+                android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+        } else {
+            binding.spinKit.visibility = View.GONE
+            requireActivity().window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 }

@@ -100,7 +100,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginEnd="24dp"
-            android:src="@drawable/ic_profile_tab"
+            android:src="@drawable/ic_notification"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/constraintlayout2"
             app:layout_constraintEnd_toEndOf="parent"

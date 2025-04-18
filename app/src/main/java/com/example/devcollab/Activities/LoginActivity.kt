@@ -3,6 +3,7 @@ package com.example.devcollab.Activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -71,11 +72,14 @@ class LoginActivity : AppCompatActivity() {
         }
 
         // ✅ Login to account
+        showLoading(true)
         authRepo.loginWithEmail(email, password){ isSuccess, message ->
             if (isSuccess) {
                 checkProfileCompletion()
+                showLoading(false)
                 Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
             } else {
+                showLoading(false)
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         }
@@ -113,16 +117,34 @@ class LoginActivity : AppCompatActivity() {
                                "Failed to save user data",
                                Toast.LENGTH_SHORT
                            ).show()
+                           showLoading(false)
                        }
                    }
                } else {
+                   // User profile not found, navigate to CreateProfileActivity
+                   showLoading(false)
                    startActivity(Intent(this, CreateProfileActivity::class.java))
                    finish()
                }
            }
         } else {
+            // User not logged in, navigate to LoginActivity
+            showLoading(false)
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.spinKit.visibility = View.VISIBLE
+            window.setFlags(
+                android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+        } else {
+            binding.spinKit.visibility = View.GONE
+            window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 }

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -59,6 +60,7 @@ class CreateProfileActivity : AppCompatActivity() {
             insets
         }
 
+        setupExperienceSuggestions()
         setupRecyclerView()
         setupClickListeners()
 
@@ -135,6 +137,25 @@ class CreateProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupExperienceSuggestions() {
+        binding.etExperience.setOnClickListener {
+            // Create a PopupMenu
+            val popupMenu = PopupMenu(this, binding.etExperience)
+            popupMenu.menu.add("Less than 1 year")
+            popupMenu.menu.add("1-3 years")
+            popupMenu.menu.add("3-5 years")
+            popupMenu.menu.add("More than 5 years")
+
+            // Handle item selection
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                binding.etExperience.setText(menuItem.title) // Set selected suggestion
+                true
+            }
+
+            // Show the PopupMenu
+            popupMenu.show()
+        }
+    }
     private fun uploadProfile() {
         val name = binding.etUsername.text.toString().trim()
         val about = binding.etAbout.text.toString().trim()
@@ -167,6 +188,7 @@ class CreateProfileActivity : AppCompatActivity() {
             return
         }
         // Show progress dialog
+        showLoading(true)
         uploadDataToFirestore(name, about, profession, experience)
     }
 
@@ -175,6 +197,7 @@ class CreateProfileActivity : AppCompatActivity() {
         val email = FirebaseAuth.getInstance().currentUser?.email
         if (uid == null || email == null) {
             showToast("User not logged in")
+            showLoading(false)
             return
         }
 
@@ -200,9 +223,11 @@ class CreateProfileActivity : AppCompatActivity() {
                 saveUserData(user)
             }.addOnFailureListener {
                 showToast("Failed to retrieve download URL")
+                showLoading(false)
             }
         }?.addOnFailureListener {
             showToast("Failed to upload image")
+            showLoading(false)
         } ?: run {
             // If no new image is uploaded, use the existing profileImageUrl
             val existingImageUrl = intent.getStringExtra("profileImageUrl")
@@ -237,11 +262,13 @@ class CreateProfileActivity : AppCompatActivity() {
                     AppDatabase.getDatabase(this@CreateProfileActivity).userDao().insertUser(userProfile)
                 }
                 showToast("Profile ${if (mode == "edit") "updated" else "created"} successfully")
+                showLoading(false)
 
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             } else {
                 showToast(message.toString())
+                showLoading(false)
             }
         }
     }
@@ -319,4 +346,16 @@ class CreateProfileActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.spinKit.visibility = View.VISIBLE
+            window.setFlags(
+                android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+        } else {
+            binding.spinKit.visibility = View.GONE
+            window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
+    }
 }

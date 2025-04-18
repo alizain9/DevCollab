@@ -3,6 +3,7 @@ package com.example.devcollab.Activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -41,42 +42,46 @@ class SignupActivity : AppCompatActivity() {
             createNewAccount()
         }
     }
+
+
     private fun createNewAccount(){
         val email = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
 
-        if (!isValidEmail(email)){
+        if (!auth.isValidEmail(email)){
             Toast.makeText(this, "Invalid email address", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (!isValidPassword(password)){
+        if (!auth.isValidPassword(password)){
             Toast.makeText(this, "Password Must be atleast 6 characters", Toast.LENGTH_SHORT).show()
             return
         }
 
+        showLoading(true)
         auth.signUpWithEmail(email, password){ isSuccess, message ->
             if (isSuccess){
+                showLoading(false)
                 startActivity(Intent(this, CreateProfileActivity::class.java))
                 finish()
                 Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
             } else{
+                showLoading(false)
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-
-    private fun isValidUsername(username: String): Boolean {
-        val regex = "^[a-zA-Z0-9]+$".toRegex()
-        return username.matches(regex)
-    }
-
-    private fun isValidEmail(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    private fun isValidPassword(password: String): Boolean {
-        return password.length >= 6
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.spinKit.visibility = View.VISIBLE
+            window.setFlags(
+                android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+        } else {
+            binding.spinKit.visibility = View.GONE
+            window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
     }
 }

@@ -68,6 +68,7 @@ class MyProfileActivity : AppCompatActivity() {
                     binding.name.text = user.username
                     binding.proffession.text = user.profession
                     binding.about.text = user.about
+                    binding.experience.text = user.experience
 
                     val skillsAdapter = ProfileSkillsAdapter(user.skills)
                     binding.rvSkillsProfile.adapter = skillsAdapter
