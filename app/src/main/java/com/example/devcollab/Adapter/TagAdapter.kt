@@ -8,39 +8,28 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.devcollab.R
 
-class TagAdapter( private val tags: MutableList<String>,
-                  private val onDeleteClick: (String) -> Unit
-) : RecyclerView.Adapter<TagAdapter.TagViewHolder>() {
+import com.example.devcollab.databinding.ItemTagBinding
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): TagViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_tag, parent, false)
-        return TagViewHolder(view)
-    }
+class TagAdapter(
+    private var tags: List<String>,
+    private val onRemove: (String) -> Unit
+) : RecyclerView.Adapter<TagAdapter.TagVH>() {
 
-    override fun onBindViewHolder(
-        holder: TagViewHolder,
-        position: Int
-    ) {
-        val tag = tags[position]
-        holder.tagText.text = tag
-        holder.deleteIcon.setOnClickListener { onDeleteClick(tag) }
-    }
-
-    override fun getItemCount(): Int {
-       return tags.size
-    }
-
-    inner class TagViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tagText: TextView = view.findViewById(R.id.text_tag)
-        val deleteIcon: ImageView = view.findViewById(R.id.button_delete)
-    }
-
-    fun updateTags(newTags: List<String>) {
-        tags.clear()
-        tags.addAll(newTags)
+    fun submitList(newTags: List<String>) {
+        tags = newTags
         notifyDataSetChanged()
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TagVH(
+        ItemTagBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
+
+    override fun getItemCount() = tags.size
+    override fun onBindViewHolder(holder: TagVH, pos: Int) {
+        val tag = tags[pos]
+        holder.binding.textTag.text = tag
+        holder.binding.buttonDelete.setOnClickListener { onRemove(tag) }
+    }
+
+    class TagVH(val binding: ItemTagBinding) : RecyclerView.ViewHolder(binding.root)
 }

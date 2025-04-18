@@ -20,7 +20,8 @@ class ProjectAdapter(private val projects: List<Project>) :
     private val TYPE_NORMAL = 1
 
     override fun getItemViewType(position: Int): Int {
-        return if (projects[position].isMyProject) MY_PROJECTS else TYPE_NORMAL
+        return 0
+        //if (projects[position].isMyProject) MY_PROJECTS else TYPE_NORMAL
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -56,8 +57,8 @@ class ProjectAdapter(private val projects: List<Project>) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(project: Project) {
             binding.titleTextView.text = project.title
-            binding.fieldTextView.text = project.field
-            binding.dateTextView.text = project.date
+            binding.fieldTextView.text = project.description
+            binding.dateTextView.text = project.deadline.toString()
             binding.descriptionTextView.text = project.description
             binding.btnViewApplicants.setOnClickListener {
                 val intent = Intent(binding.root.context, ApplicantsActivity::class.java)
@@ -71,8 +72,8 @@ class ProjectAdapter(private val projects: List<Project>) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(project: Project) {
             binding.titleTextView.text = project.title
-            binding.fieldTextView.text = project.field
-            binding.dateTextView.text = project.date
+            binding.fieldTextView.text = project.description
+            binding.dateTextView.text = project.deadline.toString()
             binding.descriptionTextView.text = project.description
             binding.viewButton.setOnClickListener {
                 val intent = Intent(binding.root.context, ViewDetailsActivity::class.java)

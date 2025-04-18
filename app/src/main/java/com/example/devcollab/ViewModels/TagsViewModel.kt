@@ -7,25 +7,17 @@ import androidx.lifecycle.map
 
 
 class TagsViewModel : ViewModel() {
-    private val _tags = MutableLiveData<MutableList<String>>(mutableListOf())
-    val tags: LiveData<List<String>> get() = _tags.map { it.toList() }
+    private val _tags = MutableLiveData<List<String>>(emptyList())
+    val tags: LiveData<List<String>> get() = _tags
 
     fun addTag(tag: String) {
-        val updatedTags = _tags.value ?: mutableListOf()
-        if (!updatedTags.contains(tag)) {
-            updatedTags.add(tag)
-            _tags.value = updatedTags
-        }
+        val updated = _tags.value.orEmpty() + tag
+        _tags.value = updated
+
     }
 
     fun removeTag(tag: String) {
-        val updatedTags = _tags.value ?: mutableListOf()
-        updatedTags.remove(tag)
-        _tags.value = updatedTags
-    }
-
-
-    fun clearTags() {
-        _tags.value = mutableListOf()
+        val updated = _tags.value.orEmpty().filterNot { it == tag }
+        _tags.value = updated
     }
 }
