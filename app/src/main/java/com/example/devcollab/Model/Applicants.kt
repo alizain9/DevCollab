@@ -1,6 +1,7 @@
 package com.example.devcollab.Model
 
 data class Applicants(
-    val name: String,
-    val profileImg: Int
+    val uid: String = "",
+    val username: String = "",
+    val profileImageUrl: String = ""
 )

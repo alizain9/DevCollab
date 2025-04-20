@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -47,6 +48,7 @@ class CreateProfileActivity : AppCompatActivity() {
     private val skillsList = mutableListOf<String>()
     private val IMAGE_PICK_CODE = 1000
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -63,6 +65,8 @@ class CreateProfileActivity : AppCompatActivity() {
         setupExperienceSuggestions()
         setupRecyclerView()
         setupClickListeners()
+
+
 
         // Retrieve data from Intent
         mode = intent.getStringExtra("mode")

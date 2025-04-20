@@ -195,6 +195,7 @@ class PostProjectActivity : AppCompatActivity() {
           //  Toast.makeText(this, "Tags = $tagsList", Toast.LENGTH_SHORT).show()
 
             postVM.postProject(
+
                 ownerId     = user.uid,
                 title       = title,
                 description = desc,

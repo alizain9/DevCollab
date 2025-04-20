@@ -103,7 +103,7 @@
                 android:background="@drawable/edittext_shape"
                 android:completionThreshold="1"
                 android:dropDownAnchor="@id/etRequiredSkills"
-                android:dropDownHeight="160dp"
+                android:dropDownHeight="wrap_content"
                 android:dropDownHorizontalOffset="10dp"
                 android:dropDownVerticalOffset="10dp"
                 android:fontFamily="@font/poppins"
