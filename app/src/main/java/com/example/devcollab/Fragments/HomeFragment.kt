@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,13 +17,18 @@ import com.bumptech.glide.Glide
 import com.example.devcollab.Adapter.CategoriesAdapter
 import com.example.devcollab.Adapter.ProjectAdapter
 import com.example.devcollab.Activities.LoginActivity
+import com.example.devcollab.Database.Firestore.ProjectRepository
 
 import com.example.devcollab.Database.Room.AppDatabase
+import com.example.devcollab.Fragments.RecentProjectsFragment
 import com.example.devcollab.Model.Category
 import com.example.devcollab.Model.Project
 import com.example.devcollab.R
+import com.example.devcollab.ViewModels.PostProjectViewModel
+import com.example.devcollab.ViewModels.PostProjectViewModelFactory
 import com.example.devcollab.databinding.FragmentHomeBinding
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 
 import kotlinx.coroutines.launch
 import me.ibrahimsn.lib.SmoothBottomBar
@@ -30,6 +37,8 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private lateinit var vmPost: PostProjectViewModel
+    private lateinit var adapter: ProjectAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +50,15 @@ class HomeFragment : Fragment() {
         setupSeeProjectsButton()
         setupBannerFlipper()
         setupCategoriesRecyclerView()
-        setupProjectsRecyclerView()
+
+        // Initialize ViewModel
+        val repo = ProjectRepository()
+        val factory = PostProjectViewModelFactory(repo)
+        vmPost = ViewModelProvider(this, factory)[PostProjectViewModel::class.java]
+
+        setupPostRecylerview()
+        fetchProjects()
+
 
 
         return binding.root
@@ -114,15 +131,42 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupProjectsRecyclerView() {
+    private fun setupPostRecylerview() {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        adapter = ProjectAdapter(mutableListOf(), currentUserUid) { project ->
+        }
 
         binding.rvProjects.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapter = ProjectAdapter(mutableListOf(), currentUserUid = "1222"){project ->
-
-            }
-
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@HomeFragment.adapter
         }
+    }
+
+    private fun fetchProjects() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+
+        if (currentUser != null){
+            vmPost.fetchRecentProjects(currentUser.uid)
+        } else {
+            vmPost.fetchProjects()
+        }
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        vmPost.projects.observe(viewLifecycleOwner) { fetchedProjects ->
+            adapter.submitList(fetchedProjects)
+        }
+
+        vmPost.loading.observe(viewLifecycleOwner) { isLoading ->
+            binding.spinKit.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchProjects()
+
     }
 
     override fun onDestroyView() {

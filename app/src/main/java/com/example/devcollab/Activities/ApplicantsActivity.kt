@@ -88,7 +88,6 @@ class ApplicantsActivity : AppCompatActivity() {
     // --------------------------
     private fun fetchAndDisplayApplicants(projectId: String) {
         showLoading(true)
-
         viewModel.fetchApplicants(projectId).observe(this) { applicants ->
             showLoading(false)
 

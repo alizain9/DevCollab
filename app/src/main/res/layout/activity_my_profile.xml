@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_light"
+    android:fillViewport="true"
     tools:context=".Activities.MyProfileActivity">
 
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/grey_light">
   <!-- Top Section -->
   <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/constraintLayout"
@@ -43,6 +47,7 @@
         app:layout_constraintTop_toTopOf="@+id/ic_back" />
 
     <ImageView
+        android:visibility="visible"
         android:id="@+id/ic_edit"
         android:layout_width="25dp"
         android:layout_height="25dp"
@@ -74,22 +79,23 @@
   </androidx.cardview.widget.CardView>
 
   <!-- Scrollable Content -->
-  <ScrollView
+  <FrameLayout
       android:id="@+id/scrollView"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:fillViewport="true"
       android:layout_marginTop="50dp"
+      android:background="@drawable/white_shape"
       app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="visible"
         android:id="@+id/info_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/white_shape">
+        >
 
       <TextView
           android:id="@+id/name"
@@ -210,6 +216,47 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/textView20" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-  </ScrollView>
+  </FrameLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+  <!-- Login Prompt -->
+  <LinearLayout
+      android:id="@+id/loginPromptContainer"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:elevation="8dp"
+      android:orientation="vertical"
+      android:padding="24dp"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:fontFamily="@font/poppins"
+        android:textColor="@color/black"
+        android:text="Login First to view Profile"
+        android:textAlignment="center"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:background="@drawable/btn_green"
+        android:padding="8dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Log In"
+        android:textColor="@android:color/white" />
+  </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

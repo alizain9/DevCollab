@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/btn_applied_ripple.xml -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/grey_dark"> <!-- Dark green ripple color -->
+    android:color="#1B5E20"> <!-- Dark green ripple color -->
 
     <!-- Normal state -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/grey_light" /> <!-- Green background -->
+            <solid android:color="@color/grey_dark" /> <!-- Green background -->
             <corners android:radius="30dp" />
         </shape>
     </item>

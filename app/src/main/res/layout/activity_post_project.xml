@@ -38,15 +38,16 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:fillViewport="true"
+        android:background="@drawable/white_shape"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPostProjectTitle">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/infoContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/white_shape"
             android:padding="16dp">
 
             <!-- Project Title -->
@@ -266,7 +267,49 @@
                 app:layout_constraintTop_toBottomOf="@id/rvTags" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
     </androidx.core.widget.NestedScrollView>
+
+    <!-- Login Prompt -->
+    <LinearLayout
+        android:id="@+id/loginPromptContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16dp"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/black"
+            android:text="Login First to Post a Project"
+            android:textAlignment="center"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_green"
+            android:padding="8dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Log In"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 
     <com.github.ybq.android.spinkit.SpinKitView
         android:id="@+id/spinKit"

@@ -2,6 +2,7 @@ package com.example.devcollab.Activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import com.example.devcollab.Adapter.ProfileSkillsAdapter
 import com.example.devcollab.Database.Room.AppDatabase
 import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivityMyProfileBinding
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class MyProfileActivity : AppCompatActivity() {
@@ -28,11 +30,12 @@ class MyProfileActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        checkLoginStatus()
+
         binding.icBack.setOnClickListener {
             finish()
         }
-
-        fetchProfileData()
 
         binding.icEdit.setOnClickListener {
             lifecycleScope.launch {
@@ -60,7 +63,6 @@ class MyProfileActivity : AppCompatActivity() {
     }
 
     private fun fetchProfileData() {
-
         lifecycleScope.launch {
             try {
                 val user = AppDatabase.getDatabase(this@MyProfileActivity).userDao().getUser()
@@ -86,6 +88,35 @@ class MyProfileActivity : AppCompatActivity() {
             } catch (e: Exception) {
 
             }
+        }
+    }
+
+    private fun checkLoginStatus() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            binding.loginPromptContainer.visibility = View.GONE
+            binding.infoHolder.visibility = View.VISIBLE
+            binding.icEdit.visibility = View.VISIBLE
+            binding.cardProfile.visibility = View.VISIBLE
+            fetchProfileData()
+        } else{
+            binding.infoHolder.visibility = View.GONE
+            binding.icEdit.visibility = View.GONE
+            binding.cardProfile.visibility = View.GONE
+            showLoginPrompt()
+        }
+
+    }
+
+    private fun showLoginPrompt() {
+        // Show the semi-transparent background and login prompt
+        binding.loginPromptContainer.visibility = View.VISIBLE
+
+        // Handle login button click
+        binding.btnLogin.setOnClickListener {
+            // Navigate to the login screen
+            val intent = Intent(this@MyProfileActivity, LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 }

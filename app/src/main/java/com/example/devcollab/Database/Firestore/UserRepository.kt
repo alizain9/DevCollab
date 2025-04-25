@@ -4,7 +4,7 @@ package com.example.devcollab.Database.Firestore
 import com.example.devcollab.Const.Constants
 import com.google.firebase.firestore.FirebaseFirestore
 
-class FirestoreRepository {
+class UserRepository {
 
     private val firestore = FirebaseFirestore.getInstance()
 

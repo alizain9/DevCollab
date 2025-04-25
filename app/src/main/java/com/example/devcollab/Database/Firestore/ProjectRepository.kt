@@ -5,6 +5,7 @@ import com.example.devcollab.Const.Constants
 import com.example.devcollab.Model.Applicants
 import com.example.devcollab.Model.Project
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -16,22 +17,15 @@ class ProjectRepository {
 
     // Firestore instance
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val projects = firestore.collection(Constants.PROJECTS_NODE)
+    private val users = firestore.collection(Constants.USERS_NODE)
 
-    // “Projects” collection reference
-    private val projects = firestore.collection("projects")
-
-    /**
-     * Adds a new Project document with an auto-generated ID.
-     *
-     * @param project the Project data to write
-     * @return a Task<Void> you can attach listeners to for success / failure
-     */
     fun addProject(project: Project): Task<Void> {
         // Generate a unique document ID
         val projectId = projects.document().id
 
         // Assign the generated ID to the project's `id` field
-        val projectWithId = project.copy(id = projectId)
+        val projectWithId = project.copy(projectId = projectId)
 
         // Write the project data to Firestore using the generated ID
         return projects
@@ -45,17 +39,18 @@ class ProjectRepository {
             .get()
     }
 
+    fun fetchRecentProjects(currentUserId: String): Task<QuerySnapshot>{
+        return projects
+            .whereNotEqualTo("ownerId", currentUserId)
+            .get()
+    }
+
     fun fetchUserProjects(ownerId: String): Task<QuerySnapshot> {
         return projects
             .whereEqualTo("ownerId", ownerId) // Filter by ownerId
             .get()
     }
 
-    fun addApplicantToProject(projectId: String, applicantUid: String): Task<Void> {
-        return projects
-            .document(projectId) // Reference the specific project document
-            .update("applicants", FieldValue.arrayUnion(applicantUid)) // Add the applicant's UID to the applicants array
-    }
 
     fun hasUserApplied(projectId: String, applicantUid: String): Task<Boolean> {
         return projects
@@ -72,6 +67,7 @@ class ProjectRepository {
     }
 
 
+    // Fetch the  All applicants for a project
     fun fetchApplicants(projectId: String): Task<List<String>> {
         return projects
             .document(projectId)
@@ -99,4 +95,48 @@ class ProjectRepository {
                     Applicants() // Return an empty Applicant object on failure
                 }
             }
-    }}
+    }
+
+    // Apply to a project
+    fun applyToProject(projectId: String, applicantUid: String): Task<Void> {
+
+        // Add the applicant's UID to the project's applicants array
+        val updateApplicantsTask = projects
+            .document(projectId)
+            .update("applicants", FieldValue.arrayUnion(applicantUid))
+
+        // Add the project ID to the user's appliedProjects array
+        val updateUserProfileTask = users
+            .document(applicantUid)
+            .update("appliedProjects", FieldValue.arrayUnion(projectId))
+
+        // Return both tasks as a single task
+        return Tasks.whenAll(updateApplicantsTask, updateUserProfileTask)
+
+    }
+
+
+    fun fetchAppliedProjects(userUid: String): Task<List<Project>> {
+        return users
+            .document(userUid)
+            .get()
+            .continueWithTask { task ->
+                if (task.isSuccessful) {
+                    val user = task.result?.toObject(Applicants::class.java)
+                    val appliedProjectIds = user?.appliedProjects ?: emptyList()
+
+                    // Fetch project details for each applied project ID
+                    val tasks = appliedProjectIds.map { projectId ->
+                        projects.document(projectId).get().continueWith { projectTask ->
+                            projectTask.result?.toObject(Project::class.java)
+                        }
+                    }
+
+                    // Wait for all tasks to complete
+                    Tasks.whenAllSuccess<Project>(tasks)
+                } else {
+                    Tasks.forResult(emptyList()) // Return an empty list if the task fails
+                }
+            }
+    }
+}

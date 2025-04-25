@@ -62,7 +62,6 @@
             android:inputType="textPassword"
             android:paddingStart="25dp"
             android:textColor="@color/black"
-
             android:textColorHint="@color/grey_dark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,6 +111,8 @@
             android:fontFamily="@font/poppins_bold"
             android:text="SignUp"
             android:textColor="@color/orange"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_login"
             app:layout_constraintEnd_toEndOf="parent"

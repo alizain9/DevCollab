@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp
 
 
 data class Project(
-    var id: String = "",
+    var projectId: String = "",
     val ownerId: String = "",
     val title: String = "",
     val description: String = "",
@@ -13,5 +13,6 @@ data class Project(
     val applicants: List<String> = emptyList(),
     val selectedTeammate: String? = null,
     val deadline: Timestamp? = null,
-    val timestamp: Timestamp = Timestamp.now()
+    val timestamp: Timestamp = Timestamp.now(),
+    val isApplied: Boolean = false
 )

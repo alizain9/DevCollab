@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     >
@@ -35,6 +37,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_medium"
             android:paddingBottom="8dp"
+            android:maxLines="1"
             android:text="App Development"
             android:textColor="@color/orange"
             android:textSize="16sp" />

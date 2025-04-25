@@ -46,8 +46,9 @@ class ProjectsFragment : Fragment() {
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Recent Projects"
+                0 -> "Recent"
                 1 -> "My Projects"
+                2 -> "Applied"
                 else -> "Tab $position"
             }
         }.attach()

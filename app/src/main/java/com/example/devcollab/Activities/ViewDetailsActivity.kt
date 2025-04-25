@@ -5,14 +5,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.devcollab.Database.Firestore.FirestoreRepository
+import com.example.devcollab.Database.Firestore.UserRepository
 import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivityViewDetailsBinding
-import com.google.firebase.firestore.FirebaseFirestore
 
 class ViewDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityViewDetailsBinding
-    private lateinit var repo: FirestoreRepository
+    private lateinit var repo: UserRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +23,7 @@ class ViewDetailsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        repo = FirestoreRepository()
+        repo = UserRepository()
 
         // Retrieve data from the Intent
         val ownerId = intent.getStringExtra("ownerId")

@@ -131,6 +131,8 @@
             android:textColor="@color/orange"
             android:textStyle="bold"
             android:fontFamily="@font/poppins_bold"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
             app:layout_constraintBottom_toBottomOf="@+id/tv_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

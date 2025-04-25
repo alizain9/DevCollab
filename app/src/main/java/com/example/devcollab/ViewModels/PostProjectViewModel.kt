@@ -1,5 +1,6 @@
 package com.example.devcollab.ViewModels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,8 +27,8 @@ class PostProjectViewModel(
     private val _projects = MutableLiveData<List<Project>>()
     val projects: LiveData<List<Project>> = _projects
 
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
+    private val _appliedProjects = MutableLiveData<List<Project>>()
+    val appliedProjects: LiveData<List<Project>> = _appliedProjects
 
     // --------------------------
     // Post a New Project
@@ -74,7 +75,22 @@ class PostProjectViewModel(
         repo.fetchProjects()
             .addOnSuccessListener { querySnapshot ->
                 val projectList = querySnapshot.documents.mapNotNull { document ->
-                    document.toObject(Project::class.java)?.copy(id = document.id)
+                    document.toObject(Project::class.java)?.copy(projectId = document.id)
+                }
+                _projects.value = projectList
+                _loading.value = false
+            }
+            .addOnFailureListener {
+                _loading.value = false
+            }
+    }
+
+    fun fetchRecentProjects(currentUserId: String) {
+        _loading.value = true
+        repo.fetchRecentProjects(currentUserId)
+            .addOnSuccessListener { querySnapshot ->
+                val projectList = querySnapshot.documents.mapNotNull { document ->
+                    document.toObject(Project::class.java)?.copy(projectId = document.id)
                 }
                 _projects.value = projectList
                 _loading.value = false
@@ -93,7 +109,7 @@ class PostProjectViewModel(
         repo.fetchUserProjects(ownerId)
             .addOnSuccessListener { querySnapshot ->
                 val projectList = querySnapshot.documents.mapNotNull { document ->
-                    document.toObject(Project::class.java)?.copy(id = document.id)
+                    document.toObject(Project::class.java)?.copy(projectId = document.id)
                 }
                 _projects.value = projectList
                 _loading.value = false
@@ -109,7 +125,7 @@ class PostProjectViewModel(
     fun applyToProject(projectId: String, applicantUid: String) {
         _loading.value = true
 
-        repo.addApplicantToProject(projectId, applicantUid)
+        repo.applyToProject(projectId, applicantUid)
             .addOnSuccessListener {
                 _loading.value = false
                 _success.value = true
@@ -162,5 +178,23 @@ class PostProjectViewModel(
             }
 
         return _applicants
+    }
+
+
+    // Fetch applied projects for the current user
+    fun fetchAppliedProjects(userUid: String) {
+        _loading.value = true
+        repo.fetchAppliedProjects(userUid)
+            .addOnSuccessListener { projects ->
+                val appliedProjects = projects.map { it.copy(isApplied = true) }
+
+                _appliedProjects.value = appliedProjects
+                _loading.value = false
+            }
+            .addOnFailureListener {
+
+                _appliedProjects.value = emptyList()
+                _loading.value = false
+            }
     }
 }

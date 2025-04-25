@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.MyProjectsFragment">
+    tools:context=".Fragments.AppliedProjectsFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMyProjects"
+    <View
+        android:id="@+id/darkBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:scrollbars="vertical"/>
+        android:background="#80000000"
+        android:visibility="gone" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAppliedProjects"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <TextView
-        android:id="@+id/noProjectsTextview"
+        android:id="@+id/appLiedProjecetStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
         android:gravity="center"
         android:padding="16dp"
         android:text="No Projects Found"
         android:textAlignment="center"
         android:textSize="14sp"
-        android:fontFamily="@font/poppins"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +61,7 @@
             android:padding="16dp"
             android:fontFamily="@font/poppins"
             android:textColor="@color/black"
-            android:text="Login First to view My Projects."
+            android:text="Login First to view Applied Projects."
             android:textAlignment="center"
             android:textSize="14sp" />
 
@@ -69,6 +77,7 @@
             android:textColor="@android:color/white" />
     </LinearLayout>
 
+
     <com.github.ybq.android.spinkit.SpinKitView
         android:id="@+id/spin_kit"
         android:layout_width="48dp"
@@ -80,6 +89,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

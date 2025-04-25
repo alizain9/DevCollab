@@ -1,10 +1,7 @@
 package com.example.devcollab.Activities
 
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -16,23 +13,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.devcollab.Adapter.AddSkillsAdapter
-import com.example.devcollab.Database.Firestore.FirestoreRepository
+import com.example.devcollab.Database.Firestore.UserRepository
 import com.example.devcollab.Database.Firestore.UserModel
 import com.example.devcollab.Database.Room.AppDatabase
 import com.example.devcollab.Database.Room.UserEntity
 import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivityCreateProfileBinding
 import com.example.devcollab.databinding.AddSkillsDialogBinding
-import com.github.ybq.android.spinkit.SpinKitView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -43,7 +37,7 @@ class CreateProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateProfileBinding
     private lateinit var addSkillsAdapter: AddSkillsAdapter
     private var selectedImageUri: Uri? = null
-    private var firestoreRepository = FirestoreRepository()
+    private var userRepository = UserRepository()
     private var mode: String? = null
     private val skillsList = mutableListOf<String>()
     private val IMAGE_PICK_CODE = 1000
@@ -250,7 +244,7 @@ class CreateProfileActivity : AppCompatActivity() {
     }
 
     private fun saveUserData(user: UserModel) {
-        firestoreRepository.saveUserProfile(user) { isSuccess, message ->
+        userRepository.saveUserProfile(user) { isSuccess, message ->
             if (isSuccess) {
                 lifecycleScope.launch {
                     val userProfile = UserEntity(

@@ -1,6 +1,7 @@
 package com.example.devcollab.Activities
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -15,6 +16,7 @@ import com.example.devcollab.ViewModels.TagsViewModel
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import com.example.devcollab.Activities.MyProfileActivity
 import com.example.devcollab.Database.Firestore.ProjectRepository
 import com.example.devcollab.ViewModels.PostProjectViewModel
 import com.example.devcollab.ViewModels.PostProjectViewModelFactory
@@ -38,13 +40,9 @@ class PostProjectActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setupView()
-        setupSkillsAutoComplete()
+        checkLoginStatus()
         setupBackButton()
-        setupTags()
-        setupDeadlinePicker()
-        setupViewModel()
-        setupPostButton()
-        observeViewModel()
+
     }
 
     // --------------------------
@@ -60,6 +58,27 @@ class PostProjectActivity : AppCompatActivity() {
             view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    private fun checkLoginStatus() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            binding.loginPromptContainer.visibility = View.GONE
+            binding.infoContainer.visibility = View.VISIBLE
+
+            setupTags()
+            setupSkillsAutoComplete()
+            setupDeadlinePicker()
+            setupViewModel()
+            setupPostButton()
+            observeViewModel()
+
+
+        } else{
+            binding.infoContainer.visibility = View.GONE
+            showLoginPrompt()
+        }
+
     }
 
 
@@ -180,6 +199,22 @@ class PostProjectActivity : AppCompatActivity() {
                 Toast.makeText(this, "You must be signed in first", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            if (binding.etProjectTitle.text.toString().trim().isEmpty()){
+                Toast.makeText(this, "Please enter a title", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (binding.etDescription.text.toString().trim().isEmpty()){
+                Toast.makeText(this, "Please enter a description", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (binding.etRequiredSkills.text.toString().trim().isEmpty()){
+                Toast.makeText(this, "Please enter Required skills", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (binding.etDeadline.text.toString().trim().isEmpty()){
+                Toast.makeText(this, "Please select a deadline", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             val title       = binding.etProjectTitle.text.toString().trim()
             val desc        = binding.etDescription.text.toString().trim()
@@ -217,6 +252,19 @@ class PostProjectActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Failed to post. Try again.", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+
+    private fun showLoginPrompt() {
+        // Show the semi-transparent background and login prompt
+        binding.loginPromptContainer.visibility = View.VISIBLE
+
+        // Handle login button click
+        binding.btnLogin.setOnClickListener {
+            // Navigate to the login screen
+            val intent = Intent(this@PostProjectActivity, LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 

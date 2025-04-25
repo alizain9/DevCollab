@@ -2,31 +2,26 @@ package com.example.devcollab.Activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.devcollab.Const.Constants
 import com.example.devcollab.Database.Firestore.AuthRepository
-import com.example.devcollab.Database.Firestore.FirestoreRepository
-import com.example.devcollab.Database.Firestore.UserModel
+import com.example.devcollab.Database.Firestore.UserRepository
 import com.example.devcollab.Database.Room.AppDatabase
 import com.example.devcollab.Database.Room.UserEntity
 import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var authRepo: AuthRepository
-    private val firestoreRepository = FirestoreRepository()
+    private val userRepository = UserRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
             val uid = user.uid
-           firestoreRepository.fetchUserProfile(uid) { user ->
+           userRepository.fetchUserProfile(uid) { user ->
                if (user != null) {
                    val userProfile = UserEntity(
                        uid = user.uid,

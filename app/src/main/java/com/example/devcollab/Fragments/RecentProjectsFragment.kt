@@ -44,10 +44,6 @@ class RecentProjectsFragment : Fragment() {
     private fun setupRecyclerView() {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
         adapter = ProjectAdapter(mutableListOf(), currentUserUid) { project ->
-            if (project.ownerId == currentUserUid) {
-                Toast.makeText(requireContext(), "You cannot apply to your own project", Toast.LENGTH_SHORT).show()
-                return@ProjectAdapter
-            }
         }
         binding.rvRecentProjects.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -56,7 +52,12 @@ class RecentProjectsFragment : Fragment() {
     }
 
     private fun fetchProjects() {
-        vmPost.fetchProjects()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            vmPost.fetchRecentProjects(currentUser.uid)
+        } else {
+            vmPost.fetchProjects()
+        }
         observeViewModel()
     }
 

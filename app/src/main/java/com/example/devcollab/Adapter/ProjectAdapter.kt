@@ -1,6 +1,8 @@
 package com.example.devcollab.Adapter
 
+import com.example.devcollab.R
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -26,20 +28,32 @@ class ProjectAdapter(
     // View Types
     private val MY_PROJECTS = 0
     private val TYPE_NORMAL = 1
+    private val TYPE_APPLIED = 2
 
     override fun getItemViewType(position: Int): Int {
-        return if (projects[position].ownerId == currentUserUid) MY_PROJECTS else TYPE_NORMAL
+        val project = projects[position]
+        Log.d("ProjectAdapter", "Project at position $position: ${project.title}, isApplied: ${project.isApplied}")
+        return when{
+            project.ownerId == currentUserUid -> MY_PROJECTS
+            project.isApplied == true -> TYPE_APPLIED
+            else -> TYPE_NORMAL
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == MY_PROJECTS) {
-            val binding =
-                MyProjectItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            MyProjectViewHolder(binding)
-        } else {
-            val binding =
-                ProjectItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            NormalViewHolder(binding)
+        return when(viewType){
+            MY_PROJECTS -> {
+                val binding = MyProjectItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                MyProjectViewHolder(binding)
+            }
+            TYPE_APPLIED -> {
+                val binding = ProjectItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                AppliedViewHolder(binding)
+            }
+            else -> {
+                val binding = ProjectItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                NormalViewHolder(binding)
+            }
         }
     }
 
@@ -48,6 +62,7 @@ class ProjectAdapter(
         when (holder) {
             is MyProjectViewHolder -> holder.bind(project)
             is NormalViewHolder -> holder.bind(project, onApplyClick)
+            is AppliedViewHolder -> holder.bind(project)
         }
     }
 
@@ -68,7 +83,7 @@ class ProjectAdapter(
             binding.btnViewApplicants.setOnClickListener {
                 // Navigate to ApplicantsActivity
                 val intent = Intent(itemView.context, ApplicantsActivity::class.java)
-                intent.putExtra("projectId", project.id)
+                intent.putExtra("projectId", project.projectId)
                 itemView.context.startActivity(intent)
             }
         }
@@ -79,7 +94,7 @@ class ProjectAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(project: Project, onApplyClick: (Project) -> Unit) {
             binding.titleTextView.text = project.title
-            binding.fieldTextView.text = project.description
+            binding.fieldTextView.text = project.requiredSkills.joinToString(", ")
             val dateFormat =
                 SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) // Format as "day/month/year"
             binding.dateTextView.text = project.deadline?.toDate()?.let { date ->
@@ -125,7 +140,7 @@ class ProjectAdapter(
 
                     if (currentUserUid != null) {
                         // Check if the user has already applied
-                        vmProject.checkIfUserApplied(project.id, currentUserUid)
+                        vmProject.checkIfUserApplied(project.projectId, currentUserUid)
                             .addOnSuccessListener { hasApplied ->
                                 if (hasApplied) {
                                     // User has already applied
@@ -136,7 +151,7 @@ class ProjectAdapter(
                                     ).show()
                                 } else {
                                     // User hasn't applied yet, proceed with applying
-                                    vmProject.applyToProject(project.id, currentUserUid)
+                                    vmProject.applyToProject(project.projectId, currentUserUid)
                                     Toast.makeText(
                                         itemView.context,
                                         "Applied Successfully",
@@ -163,6 +178,45 @@ class ProjectAdapter(
                 .create()
 
             dialog.show()
+        }
+    }
+
+    //ViewHolder for the "Applied Projects"
+    inner class AppliedViewHolder(private val binding: ProjectItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(project: Project) {
+            binding.titleTextView.text = project.title
+            binding.fieldTextView.text = project.requiredSkills.joinToString(", ")
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            binding.dateTextView.text = project.deadline?.toDate()?.let { date ->
+                dateFormat.format(date)
+            } ?: "No Deadline"
+            binding.descriptionTextView.text = project.description
+
+            // Customize UI for applied projects
+            binding.btnApply.isEnabled = false
+            binding.btnApply.text = "Applied"
+
+            // change the drawable button shape
+            binding.btnApply.background = itemView.context.getDrawable(R.drawable.btn_applied)
+
+
+
+
+            binding.btnView.setOnClickListener {
+                sendDataToViewDetailsActivity(project)
+            }
+        }
+
+        private fun sendDataToViewDetailsActivity(project: Project) {
+            val intent = Intent(itemView.context, ViewDetailsActivity::class.java)
+            intent.putExtra("title", project.title)
+            intent.putExtra("description", project.description)
+            intent.putExtra("deadline", project.deadline?.toDate()?.toString() ?: "No Deadline")
+            intent.putExtra("ownerId", project.ownerId)
+            intent.putExtra("requiredSkills", project.requiredSkills.joinToString(", "))
+            itemView.context.startActivity(intent)
         }
     }
 
