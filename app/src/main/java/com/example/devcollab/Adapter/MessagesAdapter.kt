@@ -6,36 +6,42 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.devcollab.Model.Messages
 import com.example.devcollab.R
 
-class MessagesAdapter (private val messagesList : List<Messages>):
-    RecyclerView.Adapter<MessagesAdapter.viewHolder>(){
+class MessagesAdapter(
+    private val messagesList: List<Messages>,
+    private val onItemClick: (String) -> Unit
+) : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): viewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_messages, parent, false)
-        return viewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_messages, parent, false)
+        )
+
+    override fun getItemCount() = messagesList.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val msg = messagesList[position]
+        holder.userName.text = msg.name
+
+        // load profile image URL
+        Glide.with(holder.itemView.context)
+            .load(msg.profileImageUrl)
+            .placeholder(R.drawable.user)
+            .error(R.drawable.user)
+            .into(holder.profileImage)
+
+        // open chat on click
+        holder.itemView.setOnClickListener {
+            onItemClick(msg.uid)
+        }
     }
 
-    override fun onBindViewHolder(
-        holder: viewHolder,
-        position: Int
-    ) {
-        val messages = messagesList[position]
-        holder.userName.text = messages.name
-        holder.profileImage.setImageResource(messages.profileImageResId)
-    }
-
-    override fun getItemCount(): Int {
-     return messagesList.size
-    }
-
-    inner class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val profileImage: ImageView = itemView.findViewById(R.id.image_profile)
-        val userName: TextView = itemView.findViewById(R.id.name)
+        val userName: TextView    = itemView.findViewById(R.id.name)
     }
 }

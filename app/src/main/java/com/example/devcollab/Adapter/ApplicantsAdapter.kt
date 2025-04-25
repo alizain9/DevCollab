@@ -10,14 +10,15 @@ import com.example.devcollab.Model.Applicants
 import com.example.devcollab.R
 import com.example.devcollab.databinding.ItemApplicantsBinding
 
-class ApplicantsAdapter(private val applicants: List<Applicants>,
-                        private val onProfileClick: (String) -> Unit) :
-    RecyclerView.Adapter<ApplicantsAdapter.viewHolder>() {
+class ApplicantsAdapter(
+    private var applicants: List<Applicants>,
+    private val onProfileClick: (String) -> Unit,
+    private val onContactClick: (String) -> Unit
+) : RecyclerView.Adapter<ApplicantsAdapter.viewHolder>() {
 
 
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+        parent: ViewGroup, viewType: Int
     ): viewHolder {
         val binding =
             ItemApplicantsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -25,14 +26,18 @@ class ApplicantsAdapter(private val applicants: List<Applicants>,
     }
 
     override fun onBindViewHolder(
-        holder: viewHolder,
-        position: Int
+        holder: viewHolder, position: Int
     ) {
         holder.bind(applicants[position])
     }
 
     override fun getItemCount(): Int {
         return applicants.size
+    }
+
+    fun updateData(newApplicants: List<Applicants>) {
+        this.applicants = newApplicants
+        notifyDataSetChanged()
     }
 
     inner class viewHolder(private val binding: ItemApplicantsBinding) :
@@ -43,13 +48,15 @@ class ApplicantsAdapter(private val applicants: List<Applicants>,
 
 
             // Load profile image using Glide or Picasso
-            Glide.with(itemView.context)
-                .load(applicant.profileImageUrl)
-                .placeholder(R.drawable.user)
-                .into(binding.imageProfile)
+            Glide.with(itemView.context).load(applicant.profileImageUrl)
+                .placeholder(R.drawable.user).into(binding.imageProfile)
 
             binding.cardProfileHolder.setOnClickListener {
-               onProfileClick(applicant.uid)
+                onProfileClick(applicant.uid)
+            }
+
+            binding.btnContact.setOnClickListener {
+                onContactClick(applicant.uid)
             }
         }
     }

@@ -1,7 +1,8 @@
 package com.example.devcollab.Model
 
 data class Messages(
-val name: String,
-val profileImageResId: Int
+    val uid: String,
+    val name: String,
+    val profileImageUrl: String
 )
 
