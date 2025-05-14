@@ -5,8 +5,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.devcollab.Activities.MyProfileActivity
 import com.example.devcollab.Adapter.ChatAdapter
+import com.example.devcollab.Adapter.ProfileSkillsAdapter
+import com.example.devcollab.Database.Room.AppDatabase
 import com.example.devcollab.Model.ChatMessage
 import com.example.devcollab.R
 import com.example.devcollab.databinding.ActivityChatBinding
@@ -15,6 +20,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.launch
 
 class ChatActivity : AppCompatActivity() {
 
@@ -48,12 +54,35 @@ class ChatActivity : AppCompatActivity() {
 
         setupRecyclerView()
         listenForMessages()
+        fetchProfileData()
 
         binding.btnSend.setOnClickListener {
             val text = binding.etMessage.text.toString().trim()
             if (text.isNotEmpty()) sendMessage(text)
         }
+
+        binding.icBack.setOnClickListener {
+            finish()
+        }
     }
+
+    private fun fetchProfileData() {
+        firestore.collection("users")
+            .document(recipientId)
+            .get()
+            .addOnSuccessListener { doc ->
+                val imageUrl = doc.getString("profileImageUrl")
+                if (!imageUrl.isNullOrEmpty()) {
+                    Glide.with(this@ChatActivity)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.user)
+                        .error(R.drawable.user)
+                        .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.ALL) // Cache original & resized
+                        .into(binding.imageProfile)
+                }
+            }
+    }
+
 
     private fun setupRecyclerView() {
         chatAdapter = ChatAdapter(userId)

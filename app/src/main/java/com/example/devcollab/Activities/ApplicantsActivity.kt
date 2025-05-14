@@ -133,6 +133,7 @@ class ApplicantsActivity : AppCompatActivity() {
         val dialog = BottomSheetDialog(this).apply {
             behavior.isDraggable = true
             behavior.isHideable = true
+
             setOnDismissListener { currentBottomSheetDialog = null }
         }
 
@@ -188,8 +189,9 @@ class ApplicantsActivity : AppCompatActivity() {
 
             tvName.text = user.username
             tvProfession.text = user.profession
-            tvExperience.text = "${user.experience} years"
+            tvExperience.text = "Experience: ${user.experience}"
             tvSkills.text = user.skills.joinToString(", ")
+            tvAbout.text = user.about
 
             Glide.with(this@ApplicantsActivity)
                 .load(user.profileImageUrl)

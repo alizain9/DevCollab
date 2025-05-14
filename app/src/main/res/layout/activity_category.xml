@@ -2,23 +2,34 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:background="@color/grey_light"
     android:layout_height="match_parent"
-    tools:context=".Fragments.MessagesFragment">
+    tools:context=".Activities.CategoryActivity">
 
-    <TextView
-        android:id="@+id/tvProjects"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/poppins_bold"
-        android:text="Chats"
-        android:textColor="@color/black"
-        android:textSize="24sp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/headingCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Android Development"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -29,10 +40,10 @@
         app:layout_constraintHorizontal_bias="0.5"
         android:background="@drawable/white_shape"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProjects">
+        app:layout_constraintTop_toBottomOf="@+id/headingCategory">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_chats"
+            android:id="@+id/rv_catagories"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="8dp"
@@ -44,12 +55,12 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/noChatsTV"
+        android:id="@+id/noProjectsTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="16dp"
-        android:text="No Chats Found"
+        android:text="No Projects Found"
         android:textAlignment="center"
         android:textSize="14sp"
         android:fontFamily="@font/poppins"
@@ -61,43 +72,34 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <!-- Login Prompt -->
-    <LinearLayout
-        android:id="@+id/loginPromptContainer"
-        android:layout_width="wrap_content"
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:SpinKit_Color="@color/green"
+        app:SpinKit_Style="Wave"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <TextView
+        android:id="@+id/noProjectsTextview"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:elevation="8dp"
-        android:orientation="vertical"
-        android:padding="24dp"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="No Projects Found"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:fontFamily="@font/poppins"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="16dp"
-            android:fontFamily="@font/poppins"
-            android:textColor="@color/black"
-            android:text="Login First to view Chats"
-            android:textAlignment="center"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:background="@drawable/btn_green"
-            android:padding="8dp"
-            android:fontFamily="@font/poppins_bold"
-            android:text="Log In"
-            android:textColor="@android:color/white" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

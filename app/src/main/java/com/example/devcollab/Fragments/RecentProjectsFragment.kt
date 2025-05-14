@@ -51,6 +51,12 @@ class RecentProjectsFragment : Fragment() {
         }
     }
 
+    fun refreshRecentProjectsAfterPost() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        vmPost.fetchUserProjects(uid, forceRefresh = true)
+    }
+
+
     private fun fetchProjects() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {

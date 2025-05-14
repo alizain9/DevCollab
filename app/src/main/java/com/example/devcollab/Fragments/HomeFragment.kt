@@ -5,6 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.SearchView
+import android.widget.TextView
 import android.widget.Toast
 
 import androidx.fragment.app.Fragment
@@ -17,11 +21,13 @@ import com.bumptech.glide.Glide
 import com.example.devcollab.Adapter.CategoriesAdapter
 import com.example.devcollab.Adapter.ProjectAdapter
 import com.example.devcollab.Activities.LoginActivity
+import com.example.devcollab.Activities.MyProfileActivity
 import com.example.devcollab.Database.Firestore.ProjectRepository
 
 import com.example.devcollab.Database.Room.AppDatabase
 import com.example.devcollab.Fragments.RecentProjectsFragment
 import com.example.devcollab.Model.Category
+import com.example.devcollab.Model.Contributer
 import com.example.devcollab.Model.Project
 import com.example.devcollab.R
 import com.example.devcollab.ViewModels.PostProjectViewModel
@@ -40,28 +46,93 @@ class HomeFragment : Fragment() {
     private lateinit var vmPost: PostProjectViewModel
     private lateinit var adapter: ProjectAdapter
 
+    private lateinit var img1: ImageView
+    private lateinit var name1: TextView
+    private lateinit var prof1: TextView
+
+    private lateinit var img2: ImageView
+    private lateinit var name2: TextView
+    private lateinit var prof2: TextView
+
+    private lateinit var img3: ImageView
+    private lateinit var name3: TextView
+    private lateinit var prof3: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        // Init views
+        img1 = binding.contributerOne
+        name1 = binding.conOneName
+        prof1 = binding.conOneProfession
+
+        // Init views
+        img2 = binding.contributerTwo
+        name2 = binding.conTwoName
+        prof2 = binding.conTwoProfession
+
+        // Init views
+        img3 = binding.contributerThree
+        name3 = binding.conThreeName
+        prof3 = binding.conThreeProfession
+
         setUphometop()
         setupSeeProjectsButton()
         setupBannerFlipper()
         setupCategoriesRecyclerView()
+
+        val searchView = view?.findViewById<SearchView>(R.id.searchView)
+        searchView?.queryHint = "Search here By Category"
+
 
         // Initialize ViewModel
         val repo = ProjectRepository()
         val factory = PostProjectViewModelFactory(repo)
         vmPost = ViewModelProvider(this, factory)[PostProjectViewModel::class.java]
 
+        binding.cardProfiler.setOnClickListener {
+            // jump on the Profile Activity
+            startActivity(Intent(requireContext(), MyProfileActivity::class.java))
+        }
+
+        vmPost.loadTopContributors()
         setupPostRecylerview()
         fetchProjects()
+        observeViewModels()
 
 
 
         return binding.root
+    }
+
+    private fun observeViewModels() {
+        vmPost.topContributors.observe(viewLifecycleOwner) { users ->
+            if (users.isNotEmpty()) bindContributor(0, users[0])
+            if (users.size > 1) bindContributor(1, users[1])
+            if (users.size > 2) bindContributor(2, users[2])
+        }
+    }
+    private fun bindContributor(index: Int, user: Contributer) {
+        when (index) {
+            0 -> {
+                name1.text = user.name
+                prof1.text = user.profession
+                Glide.with(this).load(user.profileImage).into(img1)
+            }
+            1 -> {
+                name2.text = user.name
+                prof2.text = user.profession
+                Glide.with(this).load(user.profileImage).into(img2)
+            }
+            2 -> {
+                name3.text = user.name
+                prof3.text = user.profession
+                Glide.with(this).load(user.profileImage).into(img3)
+            }
+        }
     }
 
     private fun setUphometop() {
@@ -99,6 +170,10 @@ class HomeFragment : Fragment() {
                 binding.btnProfile.visibility = View.GONE
             }
         }
+    }
+
+    private fun setContributer(){
+
     }
 
     private fun setupSeeProjectsButton() {

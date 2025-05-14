@@ -79,144 +79,144 @@
   </androidx.cardview.widget.CardView>
 
   <!-- Scrollable Content -->
-  <FrameLayout
-      android:id="@+id/scrollView"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:fillViewport="true"
-      android:layout_marginTop="50dp"
-      android:background="@drawable/white_shape"
-      app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="parent">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:visibility="visible"
-        android:id="@+id/info_holder"
+    <FrameLayout
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="0dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/white_shape"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
-      <TextView
-          android:id="@+id/name"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="30dp"
-          android:layout_marginTop="60dp"
-          android:fontFamily="@font/poppins_bold"
-          android:text="Name"
-          android:textColor="@color/black"
-          android:textSize="20sp"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-          android:id="@+id/proffession"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="@font/poppins_medium"
-          android:text="Profession"
-          android:textColor="@color/black"
-          app:layout_constraintStart_toStartOf="@+id/name"
-          app:layout_constraintTop_toBottomOf="@+id/name" />
-
-      <TextView
-          android:id="@+id/textView4"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="16dp"
-          android:layout_marginTop="16dp"
-          android:text="Experience"
-          android:textColor="@color/black"
-          android:fontFamily="@font/poppins_bold"
-          android:textSize="14sp"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/proffession" />
-
-      <TextView
-          android:id="@+id/experience"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="4dp"
-          android:fontFamily="@font/poppins"
-          android:textColor="@color/black"
-          app:layout_constraintStart_toStartOf="@+id/textView4"
-          app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-      <TextView
-          android:id="@+id/textView17"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="16dp"
-          android:layout_marginTop="16dp"
-          android:fontFamily="@font/poppins_bold"
-          android:text="About"
-          android:textColor="@color/black"
-          android:textSize="14sp"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/experience" />
-
-      <TextView
-          android:id="@+id/about"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginEnd="30dp"
-          android:fontFamily="@font/poppins"
-          android:textColor="@color/black"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.0"
-          app:layout_constraintStart_toStartOf="@+id/textView17"
-          app:layout_constraintTop_toBottomOf="@+id/textView17" />
-
-      <TextView
-          android:id="@+id/textView19"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
-          android:text="Skills"
-          android:fontFamily="@font/poppins_bold"
-          android:textColor="@color/black"
-          android:textSize="14sp"
-          app:layout_constraintStart_toStartOf="@+id/about"
-          app:layout_constraintTop_toBottomOf="@+id/about" />
-
-      <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/rv_skills_profile"
+      <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/info_holder"
           android:layout_width="match_parent"
-          android:layout_height="180dp"
-          android:layout_marginStart="4dp"
-          android:layout_marginTop="4dp"
-          android:layout_marginEnd="4dp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/textView19" />
-
-      <TextView
-          android:id="@+id/textView20"
-          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
-          android:text="FeedBack"
-          android:fontFamily="@font/poppins_bold"
-          android:textColor="@color/black"
-          android:textSize="14sp"
-          app:layout_constraintStart_toStartOf="@+id/textView19"
-          app:layout_constraintTop_toBottomOf="@+id/rv_skills_profile" />
+          android:visibility="visible">
 
-      <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/rv_feedback"
-          android:layout_width="match_parent"
-          android:layout_height="140dp"
-          android:layout_marginStart="4dp"
-          android:layout_marginTop="4dp"
-          android:layout_marginEnd="4dp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.5"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/textView20" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-  </FrameLayout>
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="60dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/proffession"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Profession"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/name"
+            app:layout_constraintTop_toBottomOf="@+id/name" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Experience"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proffession" />
+
+        <TextView
+            android:id="@+id/experience"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="About"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/experience" />
+
+        <TextView
+            android:id="@+id/about"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="30dp"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textView17"
+            app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Skills"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/about"
+            app:layout_constraintTop_toBottomOf="@+id/about" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_skills_profile"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView19" />
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="FeedBack"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/textView19"
+            app:layout_constraintTop_toBottomOf="@+id/rv_skills_profile" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView20" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
 
   <!-- Login Prompt -->

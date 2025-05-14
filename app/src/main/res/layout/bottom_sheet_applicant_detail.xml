@@ -1,66 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="16dp">
+    android:background="@drawable/white_shape"
+   >
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp"
-        android:layout_height="wrap_content">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imgProfile"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_profile_holder"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/user"
-            android:scaleType="centerCrop"
+            android:layout_margin="4dp"
             android:layout_marginBottom="12dp"
-            android:contentDescription="@string/profile_image"/>
+            app:cardCornerRadius="99dp"
+            app:cardElevation="2dp">
+
+            <ImageView
+                android:id="@+id/imgProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/profile_image"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/user" />
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/tvName"
             style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/poppins_bold"
             android:gravity="center"
-            android:text="Username" />
+            android:text="Username"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/tvProfession"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
             android:gravity="center"
             android:text="Profession"
-            android:layout_marginTop="4dp"/>
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tvExperience"
             style="@style/TextAppearance.MaterialComponents.Body2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/poppins"
+            android:textSize="16sp"
             android:gravity="center"
-            android:text="X years experience"
-            android:layout_marginTop="8dp"/>
+            android:text="X years experience" />
 
         <TextView
             android:id="@+id/tvSkillsLabel"
             style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Skills:"
-            android:layout_marginTop="12dp"/>
+            android:fontFamily="@font/poppins_bold"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="12dp"
+            android:text="Skills:" />
 
         <TextView
             android:id="@+id/tvSkills"
             style="@style/TextAppearance.MaterialComponents.Body2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
             android:text="Kotlin, Flutter, Firebase" />
+
+        <TextView
+            android:id="@+id/tvAboutLable"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="12dp"
+            android:text="About:" />
+
+        <TextView
+            android:id="@+id/tvAbout"
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:text="About..." />
 
         <ProgressBar
             android:id="@+id/progress"
@@ -68,8 +113,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
 
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.devcollab.Activities
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
@@ -16,6 +17,8 @@ import com.example.devcollab.ViewModels.TagsViewModel
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.devcollab.Activities.MyProfileActivity
 import com.example.devcollab.Database.Firestore.ProjectRepository
 import com.example.devcollab.ViewModels.PostProjectViewModel
@@ -35,13 +38,28 @@ class PostProjectActivity : AppCompatActivity() {
     private lateinit var tagAdapter: TagAdapter
     private lateinit var postVM: PostProjectViewModel
     private var pickedDate: Date? = null
+    private lateinit var aiLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setupView()
         checkLoginStatus()
-        setupBackButton()
+        setUpButtons()
+
+        aiLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                val aiResult = data?.getStringExtra("ai_result")
+                val resultType = data?.getStringExtra("type")
+
+                if (resultType == "title") {
+                    binding.etProjectTitle.setText(aiResult)
+                } else if (resultType == "description") {
+                    binding.etDescription.setText(aiResult)
+                }
+            }
+        }
 
     }
 
@@ -85,9 +103,21 @@ class PostProjectActivity : AppCompatActivity() {
     // --------------------------
     // Back Navigation
     // --------------------------
-    private fun setupBackButton() {
+    private fun setUpButtons() {
         binding.backToProjects.setOnClickListener {
             finish()
+        }
+
+        binding.btnGenerateTitle.setOnClickListener {
+            val intent = Intent(this, AiActivity::class.java)
+            intent.putExtra("type", "title")
+            aiLauncher.launch(intent)
+        }
+
+        binding.btnGenerateDescription.setOnClickListener {
+            val intent = Intent(this, AiActivity::class.java)
+            intent.putExtra("type", "description")
+            aiLauncher.launch(intent)
         }
     }
 
@@ -99,11 +129,11 @@ class PostProjectActivity : AppCompatActivity() {
 
     private fun setupSkillsAutoComplete() {
         val skills = listOf(
-            "Android Development", "iOS Development", "Web Development", "React", "Angular",
+            "Android Development","App Development", "Ui Designing", "iOS Development", "Web Development", "React", "Angular",
             "Vue.js", "Node.js", "Java", "Kotlin", "Python", "C++", "C#", "PHP", "SQL", "NoSQL",
             "UI/UX Design", "Graphic Design", "Machine Learning", "Deep Learning", "NLP",
-            "Cybersecurity", "DevOps", "Cloud Computing", "AWS", "Azure", "GCP",
-            "Blockchain", "Data Science", "Data Analysis", "QA Testing", "Software Engineering"
+            "Cybersecurity", "DevOps", "Cloud Computing", "AWS", "Azure", "GCP", "AI Integration", "Innovation Crew",
+            "Blockchain", "Data Science", "Data Analysis","Ai Specialist", "DevOps Engineer", "QA Engineer", "QA Testing", "Software Engineering"
         )
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, skills)
@@ -248,6 +278,7 @@ class PostProjectActivity : AppCompatActivity() {
         postVM.success.observe(this) { ok ->
             if (ok) {
                 Toast.makeText(this, "Posted successfully!", Toast.LENGTH_SHORT).show()
+                setResult(Activity.RESULT_OK)
                 finish()
             } else {
                 Toast.makeText(this, "Failed to post. Try again.", Toast.LENGTH_SHORT).show()

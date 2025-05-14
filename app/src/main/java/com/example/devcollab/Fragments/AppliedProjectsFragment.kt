@@ -90,6 +90,12 @@ class AppliedProjectsFragment : Fragment() {
         }
     }
 
+    fun refreshAppliedProjectsAfterPost() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        vmPost.fetchUserProjects(uid, forceRefresh = true)
+    }
+
+
     private fun showLoginPrompt() {
         // Show the semi-transparent background and login prompt
         binding.loginPromptContainer.visibility = View.VISIBLE

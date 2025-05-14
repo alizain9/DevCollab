@@ -1,5 +1,6 @@
 package com.example.devcollab.Fragments
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -7,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import com.example.devcollab.Adapter.ProjectsPagerAdapter
 import com.example.devcollab.Activities.PostProjectActivity
@@ -17,6 +20,29 @@ class ProjectsFragment : Fragment() {
 
     private var _binding: FragmentProjectsBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var postProjectLauncher: ActivityResultLauncher<Intent>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Register activity result to get callback when post project activity finishes
+        postProjectLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val currentItem = binding?.viewPager?.currentItem ?: 0
+                val fragmentTag = "f$currentItem"
+                val currentFragment = childFragmentManager.findFragmentByTag(fragmentTag)
+
+                when (currentFragment) {
+                    is MyProjectsFragment -> currentFragment.refreshMyProjectsAfterPost()
+                    is RecentProjectsFragment -> currentFragment.refreshRecentProjectsAfterPost()
+                    is AppliedProjectsFragment -> currentFragment.refreshAppliedProjectsAfterPost()
+                }
+            }
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -38,10 +64,7 @@ class ProjectsFragment : Fragment() {
         val adapter = ProjectsPagerAdapter(this)
         binding.viewPager.adapter = adapter
 
-        // Get the position passed from ProfileFragment
         val selectedPosition = arguments?.getInt("selected_position", 0) ?: 0
-
-        // Set the ViewPager to the selected position
         binding.viewPager.setCurrentItem(selectedPosition, false)
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
@@ -55,11 +78,12 @@ class ProjectsFragment : Fragment() {
     }
 
     /**
-     * Sets up Floating Action Button to navigate to PostProjectActivity.
+     * Sets up Floating Action Button to launch PostProjectActivity using launcher.
      */
     private fun setupFloatingActionButton() {
         binding.floatingActionButton.setOnClickListener {
-            startActivity(Intent(requireContext(), PostProjectActivity::class.java))
+            val intent = Intent(requireContext(), PostProjectActivity::class.java)
+            postProjectLauncher.launch(intent)
         }
     }
 

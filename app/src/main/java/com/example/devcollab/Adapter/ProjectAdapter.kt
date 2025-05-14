@@ -73,7 +73,7 @@ class ProjectAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(project: Project) {
             binding.titleTextView.text = project.title
-            binding.fieldTextView.text = project.description
+            binding.fieldTextView.text = project.requiredSkills.joinToString(", ")
             val dateFormat =
                 SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) // Format as "day/month/year"
             binding.dateTextView.text = project.deadline?.toDate()?.let { date ->
@@ -86,7 +86,23 @@ class ProjectAdapter(
                 intent.putExtra("projectId", project.projectId)
                 itemView.context.startActivity(intent)
             }
+
+            binding.applicantsItemLayout.setOnClickListener {
+                sendDataToViewDetailsActivity(project)
+            }
         }
+        private fun sendDataToViewDetailsActivity(project: Project) {
+            val intent = Intent(itemView.context, ViewDetailsActivity::class.java)
+            intent.putExtra("type", "my_project")
+            intent.putExtra("title", project.title)
+            intent.putExtra("projectId", project.projectId)
+            intent.putExtra("description", project.description)
+            intent.putExtra("deadline", project.deadline?.toDate()?.toString() ?: "No Deadline")
+            intent.putExtra("ownerId", project.ownerId)
+            intent.putExtra("requiredSkills", project.requiredSkills.joinToString(", "))
+            itemView.context.startActivity(intent)
+        }
+
     }
 
     // ViewHolder for "Recent Projects"
@@ -120,7 +136,9 @@ class ProjectAdapter(
 
         private fun sendDataToViewDetailsActivity(project: Project) {
             val intent = Intent(itemView.context, ViewDetailsActivity::class.java)
+            intent.putExtra("type", "normal")
             intent.putExtra("title", project.title)
+            intent.putExtra("projectId", project.projectId)
             intent.putExtra("description", project.description)
             intent.putExtra("deadline", project.deadline?.toDate()?.toString() ?: "No Deadline")
             intent.putExtra("ownerId", project.ownerId)

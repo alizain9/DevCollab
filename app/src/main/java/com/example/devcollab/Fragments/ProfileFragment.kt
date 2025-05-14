@@ -1,5 +1,6 @@
 package com.example.devcollab.Fragments
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -107,29 +108,39 @@ class ProfileFragment : Fragment() {
                 val intent = Intent(requireContext(), AboutActivity::class.java)
                 startActivity(intent)
             }
-            "Logout" ->{
-                // logout the users
-                showLoading(true)
-                authRepo = AuthRepository()
-                if (authRepo.isUserLoggedIn()) {
-                    authRepo.signOut()
-                    val job = lifecycleScope.async {
-                        AppDatabase.getDatabase(requireContext()).userDao().deleteUser()
-                        AppDatabase.getDatabase(requireContext()).clearAllTables()
+            "Logout" -> {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Confirm Logout")
+                    .setMessage("Are you sure you want to logout?")
+                    .setPositiveButton("Yes") { dialog, _ ->
+                        dialog.dismiss()
+                        // logout the user
+                        showLoading(true)
+                        authRepo = AuthRepository()
+                        if (authRepo.isUserLoggedIn()) {
+                            authRepo.signOut()
+                            val job = lifecycleScope.async {
+                                AppDatabase.getDatabase(requireContext()).userDao().deleteUser()
+                                AppDatabase.getDatabase(requireContext()).clearAllTables()
+                            }
+                            job.invokeOnCompletion {
+                                showLoading(false)
+                                Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(requireContext(), MainActivity::class.java)
+                                startActivity(intent)
+                                requireActivity().finish()
+                            }
+                        } else {
+                            showLoading(false)
+                            Toast.makeText(requireContext(), "User is not logged in", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                    job.invokeOnCompletion {
-                        showLoading(false)
-                        Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(requireContext(), MainActivity::class.java)
-                        startActivity(intent)
-                        requireActivity().finish()
+                    .setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
                     }
-
-                } else{
-                    showLoading(false)
-                    Toast.makeText(requireContext(), "User is not logged in", Toast.LENGTH_SHORT).show()
-                }
+                    .show()
             }
+
         }
     }
 

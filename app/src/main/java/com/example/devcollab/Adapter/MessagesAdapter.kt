@@ -34,10 +34,8 @@ class MessagesAdapter(
             .error(R.drawable.user)
             .into(holder.profileImage)
 
-        // open chat on click
-        holder.itemView.setOnClickListener {
-            onItemClick(msg.uid)
-        }
+        // open chat on click and also send the image to the Next Activity
+        holder.itemView.setOnClickListener { onItemClick(msg.uid) }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

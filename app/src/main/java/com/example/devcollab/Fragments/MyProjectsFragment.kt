@@ -55,7 +55,7 @@ class MyProjectsFragment : Fragment() {
         }
     }
 
-    private fun fetchMyProjects() {
+    private fun fetchMyProjects(forceRefresh: Boolean = false) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             binding.loginPromptContainer.visibility = View.GONE
@@ -97,10 +97,23 @@ class MyProjectsFragment : Fragment() {
         }
     }
 
+    fun refreshMyProjectsAfterPost() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        vmPost.fetchUserProjects(uid, forceRefresh = true)
+    }
+
+
 
     override fun onResume() {
         super.onResume()
-        fetchMyProjects()
+        vmPost.shouldRefreshMyProjects.observe(viewLifecycleOwner) { shouldRefresh ->
+            if (shouldRefresh == true) {
+                fetchMyProjects(forceRefresh = true)
+                vmPost.onMyProjectsRefreshed()
+            }else{
+                fetchMyProjects()
+            }
+        }
 
     }
     override fun onDestroyView() {

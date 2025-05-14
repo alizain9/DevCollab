@@ -9,6 +9,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.devcollab.Model.ChatMessage
 import com.example.devcollab.R
+import java.security.AccessController.getContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ChatAdapter(private val currentUid: String) :
     ListAdapter<ChatMessage, RecyclerView.ViewHolder>(DiffCallback()) {
@@ -43,7 +47,20 @@ class ChatAdapter(private val currentUid: String) :
 
     class SentVH(view: View) : RecyclerView.ViewHolder(view) {
         private val tv = view.findViewById<TextView>(R.id.tvText)
-        fun bind(m: ChatMessage) { tv.text = m.text }
+        private val time = view.findViewById<TextView>(R.id.textTime)
+        fun bind(m: ChatMessage)
+        {
+            tv.text = m.text
+            val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
+            val date = (m.timestamp as? com.google.firebase.Timestamp)?.toDate()
+            if (date != null) {
+                time.text = sdf.format(date)
+            } else {
+                time.text = "" // or show "Now" or leave it blank
+            }
+            //change the colors of the text
+
+        }
     }
 
     class ReceivedVH(view: View) : RecyclerView.ViewHolder(view) {

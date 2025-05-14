@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.devcollab.Database.Firestore.ProjectRepository
 import com.example.devcollab.Model.Applicants
+import com.example.devcollab.Model.Contributer
 import com.example.devcollab.Model.Project
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -15,9 +16,6 @@ class PostProjectViewModel(
     private val repo: ProjectRepository
 ) : ViewModel() {
 
-    // --------------------------
-    // LiveData Properties
-    // --------------------------
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
 
@@ -30,9 +28,30 @@ class PostProjectViewModel(
     private val _appliedProjects = MutableLiveData<List<Project>>()
     val appliedProjects: LiveData<List<Project>> = _appliedProjects
 
-    // --------------------------
-    // Post a New Project
-    // --------------------------
+    private val _shouldRefreshMyProjects = MutableLiveData(false)
+    val shouldRefreshMyProjects: LiveData<Boolean> = _shouldRefreshMyProjects
+
+    private val _categoryProjects = MutableLiveData<List<Project>?>()
+    val categoryProjects: LiveData<List<Project>> = _categoryProjects as LiveData<List<Project>>
+
+    private val _topContributors = MutableLiveData<List<Contributer>>()
+    val topContributors: LiveData<List<Contributer>> = _topContributors
+
+
+    private var projectsLoaded = false
+    private var appliedProjectsLoaded = false
+    private var userProjectsLoaded = mutableMapOf<String, Boolean>()
+    private var recentProjectsLoaded = mutableMapOf<String, Boolean>()
+    private val applicantsLoaded = mutableMapOf<String, Boolean>()
+    private var cachedProjects: List<Project>? = null
+
+
+    fun loadTopContributors() {
+        repo.getTopContributors { userList ->
+            _topContributors.value = userList
+        }
+    }
+
     fun postProject(
         ownerId: String,
         title: String,
@@ -59,6 +78,8 @@ class PostProjectViewModel(
             .addOnSuccessListener {
                 _loading.value = false
                 _success.value = true
+                projectsLoaded = false // refresh after post
+                _shouldRefreshMyProjects.value = true
             }
             .addOnFailureListener {
                 _loading.value = false
@@ -66,18 +87,22 @@ class PostProjectViewModel(
             }
     }
 
-    // --------------------------
-    // Fetch All Projects
-    // --------------------------
-    fun fetchProjects() {
-        _loading.value = true
+    fun onMyProjectsRefreshed() {
+        _shouldRefreshMyProjects.value = false
+    }
 
+    // ---- Fetch all projects ----
+    fun fetchProjects(forceRefresh: Boolean = false) {
+        if (projectsLoaded && !forceRefresh) return
+
+        _loading.value = true
         repo.fetchProjects()
             .addOnSuccessListener { querySnapshot ->
                 val projectList = querySnapshot.documents.mapNotNull { document ->
                     document.toObject(Project::class.java)?.copy(projectId = document.id)
                 }
                 _projects.value = projectList
+                projectsLoaded = true
                 _loading.value = false
             }
             .addOnFailureListener {
@@ -85,7 +110,10 @@ class PostProjectViewModel(
             }
     }
 
-    fun fetchRecentProjects(currentUserId: String) {
+    // ---- Fetch recent projects (per user) ----
+    fun fetchRecentProjects(currentUserId: String, forceRefresh: Boolean = false) {
+        if (recentProjectsLoaded[currentUserId] == true && !forceRefresh) return
+
         _loading.value = true
         repo.fetchRecentProjects(currentUserId)
             .addOnSuccessListener { querySnapshot ->
@@ -93,6 +121,7 @@ class PostProjectViewModel(
                     document.toObject(Project::class.java)?.copy(projectId = document.id)
                 }
                 _projects.value = projectList
+                recentProjectsLoaded[currentUserId] = true
                 _loading.value = false
             }
             .addOnFailureListener {
@@ -100,18 +129,18 @@ class PostProjectViewModel(
             }
     }
 
-    // --------------------------
-    // Fetch User-Specific Projects
-    // --------------------------
-    fun fetchUserProjects(ownerId: String) {
-        _loading.value = true
+    // ---- Fetch projects by user ----
+    fun fetchUserProjects(ownerId: String, forceRefresh: Boolean = false) {
+        if (userProjectsLoaded[ownerId] == true && !forceRefresh) return
 
+        _loading.value = true
         repo.fetchUserProjects(ownerId)
             .addOnSuccessListener { querySnapshot ->
                 val projectList = querySnapshot.documents.mapNotNull { document ->
                     document.toObject(Project::class.java)?.copy(projectId = document.id)
                 }
                 _projects.value = projectList
+                userProjectsLoaded[ownerId] = true
                 _loading.value = false
             }
             .addOnFailureListener {
@@ -119,9 +148,7 @@ class PostProjectViewModel(
             }
     }
 
-    // --------------------------
-    // Apply to a Project
-    // --------------------------
+    // ---- Apply to a project ----
     fun applyToProject(projectId: String, applicantUid: String) {
         _loading.value = true
 
@@ -129,6 +156,7 @@ class PostProjectViewModel(
             .addOnSuccessListener {
                 _loading.value = false
                 _success.value = true
+                appliedProjectsLoaded = false // mark for reload
             }
             .addOnFailureListener {
                 _loading.value = false
@@ -136,25 +164,24 @@ class PostProjectViewModel(
             }
     }
 
-    // --------------------------
-    // Check if User Has Applied
-    // --------------------------
+    // ---- Check if applied ----
     fun checkIfUserApplied(projectId: String, applicantUid: String): Task<Boolean> {
         return repo.hasUserApplied(projectId, applicantUid)
     }
 
-    // --------------------------
-    // Fetch Applicants for a Project
-    // --------------------------
+    // ---- Fetch Applicants ----
     fun fetchApplicants(projectId: String): LiveData<List<Applicants>> {
-        _loading.value = true
         val _applicants = MutableLiveData<List<Applicants>>()
 
+        if (applicantsLoaded[projectId] == true) return _applicants
+
+        _loading.value = true
         repo.fetchApplicants(projectId)
             .addOnSuccessListener { applicantUids ->
                 if (applicantUids.isEmpty()) {
                     _loading.value = false
                     _applicants.value = emptyList()
+                    applicantsLoaded[projectId] = true
                     return@addOnSuccessListener
                 }
 
@@ -170,6 +197,7 @@ class PostProjectViewModel(
                 Tasks.whenAllComplete(tasks).addOnCompleteListener {
                     _loading.value = false
                     _applicants.value = applicants
+                    applicantsLoaded[projectId] = true
                 }
             }
             .addOnFailureListener {
@@ -180,21 +208,43 @@ class PostProjectViewModel(
         return _applicants
     }
 
+    // ---- Fetch applied projects ----
+    fun fetchAppliedProjects(userUid: String, forceRefresh: Boolean = false) {
+        if (appliedProjectsLoaded && !forceRefresh) return
 
-    // Fetch applied projects for the current user
-    fun fetchAppliedProjects(userUid: String) {
         _loading.value = true
         repo.fetchAppliedProjects(userUid)
             .addOnSuccessListener { projects ->
-                val appliedProjects = projects.map { it.copy(isApplied = true) }
-
-                _appliedProjects.value = appliedProjects
+                val applied = projects.map { it.copy(isApplied = true) }
+                _appliedProjects.value = applied
+                appliedProjectsLoaded = true
                 _loading.value = false
             }
             .addOnFailureListener {
-
                 _appliedProjects.value = emptyList()
                 _loading.value = false
+            }
+    }
+
+
+    fun fetchProjectsBySkill(skill: String) {
+        if (cachedProjects != null) {
+            _categoryProjects.value = cachedProjects
+            return
+        }
+
+        repo.getProjectsBySkill(skill)
+            .addOnSuccessListener { querySnapshot ->
+                Log.d("ViewModel", "Fetching projects with skill: $skill")
+                val projects = querySnapshot.documents.mapNotNull { it.toObject(Project::class.java) }
+                cachedProjects = projects
+                _categoryProjects.value = projects
+                Log.d("ViewModel", "Projects found: ${querySnapshot.size()}")
+
+            }
+            .addOnFailureListener {
+                Log.e("ViewModel", "Error fetching projects with skill: $skill", it)
+                _categoryProjects.value = emptyList()
             }
     }
 }

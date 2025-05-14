@@ -8,4 +8,25 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="app_description">DevCollab is an innovative Android application designed for developers to collaborate on projects, share skills, and work as a team. The app enables developers to find projects, form teams, and contribute to real-world software development.</string>
     <string name="profile_image">Profile Image</string>
+
+    <string name="ai_prompt_title">
+    Act as a professional project branding assistant.
+    Based on the following project idea: "%1$s", generate only ONE highly relevant, creative, and professional-sounding project title.
+    The title should reflect the projects purpose — finding collaborators (e.g., UI/UX designers, developers).
+    It must be catchy yet clear, and under 15 words.
+    Do NOT include explanations, lists, or extra text. Just return the title and title should be Easy to understand And use consice wording.
+</string>
+
+
+    <string name="ai_prompt_description">
+    Based on this idea: "%1$s", write a short, clear project description that explains what the project is, what kind of help is needed, and any relevant technologies.
+    Keep it under 80 words. Write it in a professional tone.
+    Return only the description, no list or extra comments.
+</string>
+
+    <string name="ai_prompt_refinement">
+        Improve the grammar, structure, and clarity of the following text without changing its meaning: "%1$s".
+    Return only the revised version.
+</string>
+
 </resources>

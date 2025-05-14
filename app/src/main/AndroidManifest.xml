@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -17,12 +18,20 @@
         android:theme="@style/Theme.DevCollab"
         tools:targetApi="31">
         <activity
-            android:name=".Activities.ChatActivity"
+            android:name=".Activities.CategoryActivity"
             android:exported="false" />
+        <activity
+            android:name=".Activities.AiActivity"
+            android:exported="true"></activity>
+        <activity
+            android:name=".Activities.ChatActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:exported="false"
+            />
         <activity
             android:name=".Activities.CreateProfileActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activities.AboutActivity"
             android:exported="false" />
@@ -38,7 +47,7 @@
         <activity
             android:name=".Activities.PostProjectActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activities.SignupActivity"
             android:exported="false"

@@ -3,6 +3,7 @@ package com.example.devcollab.Database.Firestore
 import android.util.Log
 import com.example.devcollab.Const.Constants
 import com.example.devcollab.Model.Applicants
+import com.example.devcollab.Model.Contributer
 import com.example.devcollab.Model.Project
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -20,11 +21,64 @@ class ProjectRepository {
     private val projects = firestore.collection(Constants.PROJECTS_NODE)
     private val users = firestore.collection(Constants.USERS_NODE)
 
+    private var topContributorsCache: List<Contributer>? = null
+
+    fun getTopContributors(onResult: (List<Contributer>) -> Unit) {
+        // Return cached data if exists
+        topContributorsCache?.let {
+            onResult(it)
+            return
+        }
+        firestore.collection(Constants.PROJECTS_NODE)
+            .get()
+            .addOnSuccessListener { projectDocs ->
+                val ownerCountMap = mutableMapOf<String, Int>()
+
+                for (doc in projectDocs) {
+                    val ownerId = doc.getString("ownerId") ?: continue
+                    ownerCountMap[ownerId] = ownerCountMap.getOrDefault(ownerId, 0) + 1
+                }
+
+                val top3OwnerIds = ownerCountMap.entries
+                    .sortedByDescending { it.value }
+                    .take(3)
+                    .map { it.key }
+
+                fetchUserDetails(top3OwnerIds, onResult)
+            }
+    }
+
+    private fun fetchUserDetails(userIds: List<String>, onResult: (List<Contributer>) -> Unit) {
+        val usersRef = firestore.collection(Constants.USERS_NODE)
+        val contributors = mutableListOf<Contributer>()
+
+        for (userId in userIds) {
+            usersRef.document(userId)
+                .get()
+                .addOnSuccessListener { doc ->
+                    val user = Contributer(
+                        id = userId,
+                        name = doc.getString("username") ?: "",
+                        profileImage = doc.getString("profileImageUrl") ?: "",
+                        profession = doc.getString("profession") ?: ""
+                    )
+                    contributors.add(user)
+
+                    if (contributors.size == userIds.size) {
+                        // Sort based on original order
+                        val sorted = userIds.map { id -> contributors.first { it.id == id } }
+                        topContributorsCache = sorted
+                        onResult(sorted)
+                    }
+                }
+        }
+    }
+
     fun addProject(project: Project): Task<Void> {
         // Generate a unique document ID
         val projectId = projects.document().id
 
-        // Assign the generated ID to the project's `id` field
+        // Assign the generated ID to the project's id field
         val projectWithId = project.copy(projectId = projectId)
 
         // Write the project data to Firestore using the generated ID
@@ -115,6 +169,11 @@ class ProjectRepository {
 
     }
 
+    fun getProjectsBySkill(skill: String): Task<QuerySnapshot> {
+        return projects
+            .whereArrayContains("requiredSkills", skill)
+            .get()
+    }
 
     fun fetchAppliedProjects(userUid: String): Task<List<Project>> {
         return users

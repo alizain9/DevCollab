@@ -55,34 +55,55 @@
                 android:id="@+id/tvProjectTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:fontFamily="@font/poppins_bold"
                 android:text="Project Title"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/etProjectTitle"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btnGenerate_title" />
+
+            <Button
+                android:id="@+id/btnGenerate_title"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:background="@drawable/btn_ai"
+                android:drawableStart="@drawable/ic_ai"
+                android:drawablePadding="8dp"
+                android:fontFamily="@font/poppins_medium"
+                android:padding="8dp"
+                android:textColor="@color/white"
+                android:paddingStart="12dp"
+                android:paddingEnd="14dp"
+                android:textSize="10sp"
+                android:text="Genrate with AI"
+                android:textAllCaps="false"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Required Skills -->
             <EditText
                 android:id="@+id/etProjectTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/edittext_shape"
+                android:background="@drawable/edittext_low"
                 android:fontFamily="@font/poppins"
-                android:hint="Enter project title"
+                android:gravity="top"
+                android:hint="Enter project title..."
                 android:maxLines="2"
+                android:minHeight="60dp"
                 android:padding="10dp"
                 android:paddingStart="16dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey_dark"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvProjectTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/btnGenerate_title" />
 
-            <!-- Required Skills -->
             <TextView
                 android:id="@+id/tvRequiredSkills"
                 android:layout_width="wrap_content"
@@ -121,19 +142,39 @@
                 app:layout_constraintTop_toBottomOf="@id/tvRequiredSkills" />
 
 
+            <Button
+                android:id="@+id/btnGenerate_description"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/btn_ai"
+                android:drawableStart="@drawable/ic_ai"
+                android:drawablePadding="8dp"
+                android:fontFamily="@font/poppins_medium"
+                android:padding="8dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="14dp"
+                android:text="Genrate with AI"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/etRequiredSkills" />
+
+
             <!-- Project Description -->
             <TextView
                 android:id="@+id/tvDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:fontFamily="@font/poppins_bold"
                 android:text="Project Description"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/etDescription"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/etRequiredSkills" />
+                app:layout_constraintTop_toTopOf="@+id/btnGenerate_description" />
 
             <EditText
                 android:id="@+id/etDescription"
@@ -144,16 +185,18 @@
                 android:fontFamily="@font/poppins"
                 android:gravity="top"
                 android:hint="Enter project description"
-                android:maxLines="4"
-                android:minHeight="120dp"
+                android:maxLines="6"
+                android:minHeight="150dp"
+                android:overScrollMode="always"
                 android:padding="10dp"
                 android:paddingStart="16dp"
+                android:scrollbars="vertical"
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey_dark"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/btnGenerate_description" />
 
             <!-- Deadline -->
             <TextView
